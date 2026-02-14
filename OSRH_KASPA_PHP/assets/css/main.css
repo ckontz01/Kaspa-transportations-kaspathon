@@ -1,0 +1,106 @@
+:root {
+    --color-bg: #020617;
+    --color-bg-elevated: #020617;
+    --color-surface: #0b1120;
+    --color-surface-alt: #020617;
+    --color-border-subtle: #1e293b;
+    --color-text: #e5e7eb;
+    --color-text-muted: #94a3b8;
+    --color-accent: #3b82f6;
+    --color-accent-soft: rgba(59, 130, 246, 0.12);
+    --color-danger: #ef4444;
+    --color-danger-soft: rgba(239, 68, 68, 0.12);
+    --color-warning: #f59e0b;
+    --color-success: #22c55e;
+    --shadow-soft: 0 18px 35px rgba(15, 23, 42, 0.85);
+    --radius-lg: 1.2rem;
+    --radius-md: 0.75rem;
+    --radius-sm: 0.45rem;
+    --transition-fast: 0.15s ease-out;
+    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+}
+
+body.theme-dark {
+    font-family: var(--font-sans);
+    background: radial-gradient(circle at top left, #1e293b 0, #020617 45%, #000000 100%);
+    color: var(--color-text);
+    -webkit-font-smoothing: antialiased;
+}
+
+.app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Typography */
+
+h1, h2, h3, h4, h5, h6 {
+    color: #f9fafb;
+    margin-top: 0;
+    letter-spacing: 0.03em;
+}
+
+h1 {
+    font-size: 1.9rem;
+    font-weight: 700;
+}
+h2 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+p {
+    margin-top: 0.4rem;
+    margin-bottom: 0.4rem;
+    color: var(--color-text-muted);
+}
+
+a {
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color var(--transition-fast), opacity var(--transition-fast);
+}
+
+a:hover {
+    color: #60a5fa;
+}
+
+/* Container */
+
+.container {
+    width: 100%;
+    max-width: 1160px;
+    margin: 0 auto;
+    padding: 1.5rem 1.25rem;
+}
+
+/* Scrollbars */
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+::-webkit-scrollbar-thumb {
+    background: #1e293b;
+    border-radius: 999px;
+}
+::-webkit-scrollbar-track {
+    background: #020617;
+}

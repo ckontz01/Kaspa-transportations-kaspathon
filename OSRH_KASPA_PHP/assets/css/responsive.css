@@ -1,0 +1,759 @@
+/* ============================================================
+   OSRH Global Mobile Responsive Styles
+   Ensures all pages are mobile-friendly
+   ============================================================ */
+
+/* ---- Viewport & Touch ---- */
+html {
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+/* Prevent horizontal overflow on all devices */
+html, body {
+    overflow-x: hidden;
+}
+
+/* Better touch targets on mobile */
+@media (max-width: 768px) {
+
+    /* ============================================================
+       TYPOGRAPHY – scale down for small screens
+       ============================================================ */
+    h1 { font-size: 1.35rem; }
+    h2 { font-size: 1.2rem; }
+    h3 { font-size: 1.05rem; }
+
+    /* ============================================================
+       CONTAINER – tighter padding
+       ============================================================ */
+    .container {
+        padding: 1rem 0.75rem;
+    }
+
+    /* ============================================================
+       NAVBAR – improved mobile menu
+       ============================================================ */
+    .navbar-inner {
+        padding: 0.5rem 0.75rem;
+        flex-wrap: wrap;
+    }
+
+    .navbar-logo {
+        width: 30px;
+        height: 30px;
+    }
+
+    .navbar-title {
+        font-size: 0.82rem;
+    }
+
+    .navbar-toggle {
+        display: inline-flex !important;
+        flex-direction: column;
+        justify-content: center;
+        padding: 0.5rem;
+        margin-left: auto;
+        z-index: 60;
+    }
+
+    .navbar .navbar-links {
+        display: none;
+        width: 100%;
+        margin-top: 0.5rem;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    body.nav-open .navbar .navbar-links {
+        display: flex;
+    }
+
+    body.nav-open .navbar-menu {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0.15rem;
+        width: 100%;
+    }
+
+    .navbar-menu a {
+        display: block;
+        padding: 0.6rem 0.75rem;
+        border-radius: 8px;
+        font-size: 0.88rem;
+    }
+
+    .navbar-right {
+        width: 100%;
+        justify-content: space-between;
+        padding-top: 0.5rem;
+        border-top: 1px solid rgba(148, 163, 184, 0.1);
+        margin-top: 0.25rem;
+    }
+
+    .navbar-username {
+        font-size: 0.78rem;
+        padding: 0.3rem 0.6rem;
+    }
+
+    /* ============================================================
+       CARDS – full-width, less padding
+       ============================================================ */
+    .card {
+        padding: 0.9rem 0.75rem;
+        border-radius: 0.8rem;
+        margin-left: 0 !important;
+        margin-right: 0 !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .card-header .btn,
+    .card-header button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .card-title {
+        font-size: 0.95rem;
+    }
+
+    /* ============================================================
+       TABLES – horizontal scroll + readable on mobile
+       ============================================================ */
+    .table {
+        font-size: 0.8rem;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.45rem 0.4rem;
+        white-space: nowrap;
+    }
+
+    .table th {
+        font-size: 0.72rem;
+    }
+
+    /* Ensure table wrapper scrolls */
+    [style*="overflow-x"] {
+        -webkit-overflow-scrolling: touch;
+    }
+
+    /* ============================================================
+       BUTTONS – larger touch targets on mobile
+       ============================================================ */
+    .btn {
+        padding: 0.6rem 1rem;
+        font-size: 0.88rem;
+        min-height: 44px; /* Apple's recommended minimum touch target */
+    }
+
+    .btn-small {
+        padding: 0.45rem 0.75rem;
+        font-size: 0.8rem;
+        min-height: 38px;
+    }
+
+    /* ============================================================
+       FORMS – full-width inputs, better spacing
+       ============================================================ */
+    .form-control {
+        font-size: 16px; /* Prevents iOS zoom on focus */
+        padding: 0.55rem 0.65rem;
+        min-height: 44px;
+    }
+
+    .form-label {
+        font-size: 0.82rem;
+        margin-bottom: 0.2rem;
+    }
+
+    .form-group {
+        margin-bottom: 0.75rem;
+    }
+
+    select.form-control {
+        font-size: 16px; /* Prevents iOS zoom */
+    }
+
+    input[type="file"].form-control {
+        font-size: 0.82rem;
+        padding: 0.4rem;
+    }
+
+    /* ============================================================
+       INLINE GRID LAYOUTS – stack on mobile
+       These target the inline style grids used across pages
+       ============================================================ */
+
+    /* Force all inline grid layouts to single column */
+    [style*="grid-template-columns: repeat(auto-fit"],
+    [style*="grid-template-columns: repeat(2"],
+    [style*="grid-template-columns: repeat(3"],
+    [style*="grid-template-columns: 1fr 1fr"],
+    [style*="grid-template-columns: 2fr 1fr"],
+    [style*="grid-template-columns: 2fr 1fr 1fr"],
+    [style*="grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr)"],
+    [style*="grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr)"],
+    [style*="grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr)"] {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* ============================================================
+       DASHBOARD LAYOUTS
+       ============================================================ */
+    .dashboard-container {
+        padding: 0 0.5rem !important;
+        margin: 1rem auto !important;
+    }
+
+    .dashboard-header h1 {
+        font-size: 1.3rem;
+    }
+
+    .dashboard-header p {
+        font-size: 0.88rem;
+    }
+
+    .stats-overview {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.6rem;
+    }
+
+    .stat-card {
+        padding: 0.9rem 0.6rem;
+    }
+
+    .stat-card .stat-value {
+        font-size: 1.5rem;
+    }
+
+    .stat-card .stat-label {
+        font-size: 0.68rem;
+    }
+
+    .section-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1.25rem;
+    }
+
+    .section-card.full-width {
+        grid-column: span 1;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding: 0.75rem 1rem;
+    }
+
+    .section-body {
+        padding: 0.75rem;
+    }
+
+    .quick-stats {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 0.75rem;
+    }
+
+    .quick-stat .value {
+        font-size: 1.2rem;
+    }
+
+    .quick-stat .label {
+        font-size: 0.65rem;
+    }
+
+    .link-list {
+        grid-template-columns: 1fr !important;
+        gap: 0.5rem;
+    }
+
+    .link-list a {
+        font-size: 0.85rem;
+        padding: 0.75rem;
+    }
+
+    .alert-item {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        padding: 0.65rem 0.75rem;
+        font-size: 0.82rem;
+    }
+
+    .alert-item .btn {
+        margin-left: 0 !important;
+        width: 100%;
+        margin-top: 0.25rem;
+    }
+
+    /* ============================================================
+       MODALS – full-screen on mobile
+       ============================================================ */
+    /* Generic modal overlays used with inline styles */
+    [style*="position: fixed"][style*="z-index"] {
+        padding: 0.5rem !important;
+        align-items: flex-start !important;
+    }
+
+    [style*="position: fixed"][style*="z-index"] > .card {
+        max-width: 100% !important;
+        width: 100% !important;
+        margin: 0 !important;
+        border-radius: 12px !important;
+    }
+
+    /* OSRH Modal system */
+    .osrh-modal {
+        width: 95%;
+        max-width: 100%;
+    }
+
+    .osrh-modal-header {
+        padding: 1rem;
+    }
+
+    .osrh-modal-body {
+        padding: 1rem;
+    }
+
+    .osrh-modal-footer {
+        padding: 0.75rem 1rem;
+        flex-direction: column-reverse;
+    }
+
+    .osrh-modal-footer .btn {
+        width: 100%;
+        min-width: auto;
+    }
+
+    /* ============================================================
+       MAPS – taller on mobile for better visibility
+       ============================================================ */
+    .map-container {
+        height: 280px;
+        border-radius: 0.8rem;
+    }
+
+    .map-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .route-info-grid {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .route-legend {
+        flex-wrap: wrap;
+    }
+
+    /* ============================================================
+       FLASH MESSAGES – full width
+       ============================================================ */
+    .flash {
+        font-size: 0.82rem;
+        padding: 0.5rem 0.65rem;
+        border-radius: 0.6rem;
+    }
+
+    /* ============================================================
+       FOOTER – stack on mobile
+       ============================================================ */
+    .footer-inner {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.25rem;
+        padding: 0.65rem 0.75rem;
+        font-size: 0.75rem;
+    }
+
+    /* ============================================================
+       INDEX / LANDING PAGE
+       ============================================================ */
+    .hero-section {
+        padding: 2rem 1rem !important;
+    }
+
+    .hero-section h1 {
+        font-size: 1.6rem !important;
+    }
+
+    .hero-section p {
+        font-size: 0.95rem !important;
+    }
+
+    .hero-actions {
+        flex-direction: column;
+        gap: 0.75rem;
+        width: 100%;
+    }
+
+    .hero-actions .btn {
+        width: 100%;
+    }
+
+    .hero-stats {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+    }
+
+    .features-section,
+    .cta-section {
+        padding: 2rem 0.75rem !important;
+    }
+
+    .section-header h2 {
+        font-size: 1.4rem;
+    }
+
+    .features-grid {
+        grid-template-columns: 1fr !important;
+        gap: 1rem;
+    }
+
+    .feature-card {
+        padding: 1.25rem;
+    }
+
+    .cta-cards {
+        grid-template-columns: 1fr !important;
+        gap: 1rem;
+    }
+
+    .cta-card {
+        padding: 1.5rem 1.25rem;
+    }
+
+    /* ============================================================
+       ACTIVE TRIP INDICATOR
+       ============================================================ */
+    .active-trip-link {
+        font-size: 0.78rem;
+        padding: 0.4rem 0.6rem;
+    }
+
+    /* ============================================================
+       BADGES
+       ============================================================ */
+    .badge {
+        font-size: 0.72rem;
+        padding: 0.2rem 0.5rem;
+    }
+
+    /* ============================================================
+       DOCUMENT SECTIONS (vehicles, driver details etc.)
+       ============================================================ */
+    [style*="background: var(--bg-secondary"] {
+        padding: 0.75rem !important;
+        border-radius: 6px !important;
+    }
+
+    /* Warning/info boxes */
+    [style*="background: #fef3c7"] {
+        padding: 0.75rem !important;
+        border-radius: 6px !important;
+    }
+
+    [style*="background: #fef3c7"] p {
+        font-size: 0.8rem !important;
+    }
+
+    /* ============================================================
+       FORM BUTTON ROWS – stack on mobile
+       ============================================================ */
+    [style*="display: flex"][style*="justify-content: flex-end"][style*="gap"] {
+        flex-direction: column-reverse !important;
+    }
+
+    [style*="display: flex"][style*="justify-content: flex-end"][style*="gap"] .btn {
+        width: 100%;
+    }
+
+    /* ============================================================
+       TABS / FILTERS (operator pages)
+       ============================================================ */
+    [style*="display: flex"][style*="flex-wrap: wrap"][style*="gap"] {
+        gap: 0.4rem !important;
+    }
+
+    /* ============================================================
+       KASPA PAYMENT STYLES – mobile adjustments
+       ============================================================ */
+    .kaspa-connect-btn {
+        width: 100%;
+        justify-content: center;
+        font-size: 0.85rem;
+        padding: 0.65rem 1rem;
+    }
+
+    /* ============================================================
+       MESSAGES PAGES – full width
+       ============================================================ */
+    .messages-container,
+    .messages-layout,
+    [class*="messages"] {
+        max-width: 100% !important;
+    }
+
+    .messages-layout {
+        grid-template-columns: 1fr !important;
+        height: auto !important;
+    }
+
+    .conversations-panel {
+        max-height: 200px;
+    }
+
+    .chat-panel {
+        min-height: 300px;
+    }
+
+    /* ============================================================
+       HUB PAGES (operator hub navigation pages)
+       ============================================================ */
+    .hub-container {
+        padding: 0 0.5rem !important;
+    }
+
+    .hub-header h1 {
+        font-size: 1.4rem;
+    }
+
+    .hub-cards {
+        grid-template-columns: 1fr !important;
+        gap: 1rem;
+    }
+
+    .hub-card {
+        padding: 1rem;
+    }
+
+    .hub-card-icon {
+        font-size: 2.25rem;
+    }
+
+    .hub-stats {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 0.6rem;
+        padding: 0.9rem;
+    }
+
+    .hub-stat .value {
+        font-size: 1.3rem;
+    }
+
+    /* ============================================================
+       PROFILE PAGE
+       ============================================================ */
+    .profile-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    /* ============================================================
+       DRIVER PAGES
+       ============================================================ */
+    .earnings-summary {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* ============================================================
+       REGISTRATION PAGES – narrower padding
+       ============================================================ */
+    .registration-form,
+    .auth-form {
+        padding: 1rem !important;
+    }
+
+    /* ============================================================
+       CHECKBOX + RADIO – larger touch targets
+       ============================================================ */
+    input[type="checkbox"],
+    input[type="radio"] {
+        width: 20px;
+        height: 20px;
+        min-width: 20px;
+    }
+
+    label {
+        cursor: pointer;
+    }
+}
+
+/* ============================================================
+   SMALL PHONES (< 480px) – even tighter
+   ============================================================ */
+@media (max-width: 480px) {
+    h1 { font-size: 1.2rem; }
+    h2 { font-size: 1.05rem; }
+
+    .container {
+        padding: 0.75rem 0.5rem;
+    }
+
+    .card {
+        padding: 0.75rem 0.5rem;
+        border-radius: 0.65rem;
+    }
+
+    .stats-overview {
+        grid-template-columns: 1fr 1fr !important;
+        gap: 0.5rem;
+    }
+
+    .stat-card .stat-value {
+        font-size: 1.25rem;
+    }
+
+    .quick-stats {
+        grid-template-columns: 1fr 1fr 1fr !important;
+        gap: 0.4rem;
+    }
+
+    .quick-stat .value {
+        font-size: 1rem;
+    }
+
+    .btn {
+        font-size: 0.84rem;
+        padding: 0.55rem 0.8rem;
+    }
+
+    .table {
+        font-size: 0.75rem;
+    }
+
+    .table th,
+    .table td {
+        padding: 0.35rem 0.3rem;
+    }
+
+    .navbar-menu a {
+        font-size: 0.84rem;
+        padding: 0.55rem 0.65rem;
+    }
+
+    /* Hero section further shrink */
+    .hero-section h1 {
+        font-size: 1.3rem !important;
+    }
+
+    .feature-card {
+        padding: 1rem;
+    }
+
+    .feature-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 1.4rem;
+    }
+
+    /* Map smaller on very small screens */
+    .map-container {
+        height: 220px;
+    }
+
+    /* Flash messages */
+    .flash {
+        font-size: 0.78rem;
+        padding: 0.45rem 0.55rem;
+    }
+
+    /* Modal footers */
+    .osrh-modal-footer {
+        padding: 0.65rem 0.75rem;
+    }
+}
+
+/* ============================================================
+   TABLET (769px – 1024px) – moderate adjustments
+   ============================================================ */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        padding: 1.25rem 1rem;
+    }
+
+    .card {
+        padding: 1rem 1.1rem;
+    }
+
+    .section-grid {
+        gap: 1.5rem;
+    }
+
+    .stats-overview {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+
+    .navbar-menu a {
+        font-size: 0.82rem;
+        padding: 0.4rem 0.55rem;
+    }
+
+    .dashboard-container {
+        padding: 0 0.75rem !important;
+    }
+
+    /* Two-column grids that reference minmax inline */
+    [style*="grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr)"],
+    [style*="grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr)"],
+    [style*="grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr)"] {
+        gap: 1rem !important;
+    }
+}
+
+/* ============================================================
+   LANDSCAPE PHONE – prevent oversized modals
+   ============================================================ */
+@media (max-width: 768px) and (orientation: landscape) {
+    .map-container {
+        height: 200px;
+    }
+
+    [style*="position: fixed"][style*="z-index"] {
+        align-items: flex-start !important;
+        padding: 0.5rem !important;
+    }
+}
+
+/* ============================================================
+   PRINT – basic print-friendly styles
+   ============================================================ */
+@media print {
+    .navbar,
+    .navbar-toggle,
+    .app-footer,
+    .btn,
+    .flash-container {
+        display: none !important;
+    }
+
+    .app-main {
+        padding: 0;
+    }
+
+    .card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+
+    body.theme-dark {
+        background: #fff;
+        color: #000;
+    }
+}

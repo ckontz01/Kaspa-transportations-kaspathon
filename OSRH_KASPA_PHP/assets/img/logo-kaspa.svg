@@ -1,0 +1,29 @@
+<svg width="40" height="40" viewBox="0 0 40 40" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="kaspaGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#49EACB"/>
+      <stop offset="100%" stop-color="#70C7BA"/>
+    </linearGradient>
+    <linearGradient id="kaspaGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#70C7BA"/>
+      <stop offset="100%" stop-color="#49EACB"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Kaspa K shape stylized as transport network -->
+  <!-- Left vertical bar -->
+  <rect x="6" y="6" width="5" height="28" rx="2" fill="url(#kaspaGrad1)"/>
+  
+  <!-- Upper diagonal -->
+  <polygon points="11,20 28,6 34,6 34,10 15,22" fill="url(#kaspaGrad2)"/>
+  
+  <!-- Lower diagonal -->
+  <polygon points="11,20 34,34 34,30 15,18 28,34 22,34" fill="url(#kaspaGrad1)"/>
+  
+  <!-- Connection nodes representing transport services -->
+  <circle cx="32" cy="8" r="3" fill="#49EACB"/>
+  <circle cx="32" cy="32" r="3" fill="#49EACB"/>
+  
+  <!-- Center connection point -->
+  <circle cx="13" cy="20" r="2.5" fill="#70C7BA"/>
+</svg>

@@ -1,0 +1,571 @@
+/**
+ * OSRH Kaspa Payment Styles
+ * 
+ * Styles for Kaspa cryptocurrency payment integration
+ * Matches the OSRH dark theme with Kaspa brand colors
+ */
+
+/* ============================================================
+   KASPA BRAND COLORS
+   ============================================================ */
+:root {
+    --kaspa-primary: #49EACB;
+    --kaspa-secondary: #70B8B0;
+    --kaspa-accent: #2DD4BF;
+    --kaspa-dark: #1a1a2e;
+    --kaspa-darker: #0f0f1a;
+    --kaspa-light: #e2e8f0;
+    --kaspa-success: #10b981;
+    --kaspa-warning: #f59e0b;
+    --kaspa-error: #ef4444;
+}
+
+/* ============================================================
+   WALLET CONNECT BUTTON
+   ============================================================ */
+.kaspa-connect-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: linear-gradient(135deg, var(--kaspa-primary) 0%, var(--kaspa-secondary) 100%);
+    color: var(--kaspa-dark);
+    font-weight: 600;
+    font-size: 0.9rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 8px rgba(73, 234, 203, 0.3);
+}
+
+.kaspa-connect-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(73, 234, 203, 0.4);
+}
+
+.kaspa-connect-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.kaspa-connect-btn.loading .kaspa-icon {
+    animation: kaspa-pulse 1s ease-in-out infinite;
+}
+
+.kaspa-connect-btn.connected {
+    background: var(--kaspa-dark);
+    color: var(--kaspa-primary);
+    border: 1px solid var(--kaspa-primary);
+}
+
+.kaspa-connect-btn .kaspa-icon {
+    font-size: 1.2rem;
+}
+
+@keyframes kaspa-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* ============================================================
+   PAYMENT WIDGET
+   ============================================================ */
+.kaspa-payment-widget {
+    background: var(--kaspa-dark);
+    border: 1px solid rgba(73, 234, 203, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    max-width: 400px;
+    margin: 1rem auto;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.kaspa-widget-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(73, 234, 203, 0.2);
+}
+
+.kaspa-widget-header .kaspa-logo {
+    font-size: 1.5rem;
+}
+
+.kaspa-widget-header .kaspa-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--kaspa-primary);
+}
+
+/* ============================================================
+   PAYMENT INFO
+   ============================================================ */
+.kaspa-payment-info {
+    margin-bottom: 1.5rem;
+}
+
+.kaspa-amount {
+    text-align: center;
+    margin-bottom: 1rem;
+}
+
+.kaspa-amount-kas {
+    display: block;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--kaspa-primary);
+    letter-spacing: -0.02em;
+}
+
+.kaspa-amount-eur {
+    display: block;
+    font-size: 1rem;
+    color: var(--kaspa-light);
+    opacity: 0.8;
+    margin-top: 0.25rem;
+}
+
+.kaspa-address {
+    background: var(--kaspa-darker);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.kaspa-address-label {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--kaspa-light);
+    opacity: 0.7;
+    margin-bottom: 0.5rem;
+}
+
+.kaspa-address-value {
+    display: block;
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 0.85rem;
+    color: var(--kaspa-primary);
+    word-break: break-all;
+    margin-bottom: 0.5rem;
+}
+
+.kaspa-copy-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.4rem 0.75rem;
+    background: transparent;
+    color: var(--kaspa-secondary);
+    border: 1px solid var(--kaspa-secondary);
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.kaspa-copy-btn:hover {
+    background: var(--kaspa-secondary);
+    color: var(--kaspa-dark);
+}
+
+.kaspa-expires {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--kaspa-light);
+    opacity: 0.8;
+}
+
+.kaspa-timer {
+    font-weight: 600;
+    color: var(--kaspa-primary);
+}
+
+.kaspa-timer.warning {
+    color: var(--kaspa-warning);
+}
+
+.kaspa-timer.expired {
+    color: var(--kaspa-error);
+}
+
+/* ============================================================
+   QR CODE
+   ============================================================ */
+.kaspa-qr-code {
+    display: flex;
+    justify-content: center;
+    padding: 1rem;
+    background: #fff;
+    border-radius: 12px;
+    margin: 1rem 0;
+}
+
+.kaspa-qr-code img {
+    border-radius: 8px;
+}
+
+/* ============================================================
+   PAYMENT ACTIONS
+   ============================================================ */
+.kaspa-payment-actions {
+    text-align: center;
+    margin: 1rem 0;
+}
+
+.kaspa-pay-btn {
+    width: 100%;
+    padding: 1rem;
+    background: linear-gradient(135deg, var(--kaspa-primary) 0%, var(--kaspa-accent) 100%);
+    color: var(--kaspa-dark);
+    font-weight: 600;
+    font-size: 1rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.kaspa-pay-btn:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(73, 234, 203, 0.4);
+}
+
+.kaspa-pay-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.kaspa-or-divider {
+    position: relative;
+    margin: 1rem 0;
+    color: var(--kaspa-light);
+    opacity: 0.6;
+    font-size: 0.85rem;
+}
+
+.kaspa-or-divider::before,
+.kaspa-or-divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 30%;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.kaspa-or-divider::before {
+    left: 0;
+}
+
+.kaspa-or-divider::after {
+    right: 0;
+}
+
+/* ============================================================
+   PAYMENT STATUS
+   ============================================================ */
+.kaspa-payment-status {
+    text-align: center;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    margin-top: 1rem;
+}
+
+.kaspa-payment-status.pending {
+    background: rgba(245, 158, 11, 0.2);
+    color: var(--kaspa-warning);
+}
+
+.kaspa-payment-status.confirming {
+    background: rgba(73, 234, 203, 0.2);
+    color: var(--kaspa-primary);
+}
+
+.kaspa-payment-status.confirmed {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--kaspa-success);
+}
+
+.kaspa-payment-status.failed {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--kaspa-error);
+}
+
+/* ============================================================
+   TOAST NOTIFICATIONS
+   ============================================================ */
+.kaspa-toast {
+    position: fixed;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--kaspa-dark);
+    color: var(--kaspa-light);
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    border: 1px solid var(--kaspa-primary);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    opacity: 0;
+    transition: all 0.3s ease;
+    z-index: 10000;
+}
+
+.kaspa-toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* ============================================================
+   EXCHANGE RATE DISPLAY
+   ============================================================ */
+.kaspa-rate-display {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: var(--kaspa-darker);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: var(--kaspa-primary);
+}
+
+.kaspa-rate-display.kaspa-rate-stale {
+    color: var(--kaspa-warning);
+    opacity: 0.8;
+}
+
+/* ============================================================
+   WALLET ADDRESS INPUT
+   ============================================================ */
+.kaspa-address-input {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.kaspa-address-input input {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    background: var(--kaspa-darker);
+    border: 1px solid rgba(73, 234, 203, 0.3);
+    border-radius: 8px;
+    color: var(--kaspa-light);
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 0.9rem;
+}
+
+.kaspa-address-input input:focus {
+    outline: none;
+    border-color: var(--kaspa-primary);
+    box-shadow: 0 0 0 3px rgba(73, 234, 203, 0.15);
+}
+
+.kaspa-address-input input::placeholder {
+    color: rgba(226, 232, 240, 0.4);
+}
+
+.kaspa-address-input input.valid {
+    border-color: var(--kaspa-success);
+}
+
+.kaspa-address-input input.invalid {
+    border-color: var(--kaspa-error);
+}
+
+/* ============================================================
+   WALLET LIST
+   ============================================================ */
+.kaspa-wallet-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.kaspa-wallet-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    background: var(--kaspa-darker);
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    border: 1px solid rgba(73, 234, 203, 0.1);
+    transition: all 0.2s;
+}
+
+.kaspa-wallet-item:hover {
+    border-color: var(--kaspa-primary);
+}
+
+.kaspa-wallet-item.default {
+    border-color: var(--kaspa-primary);
+    background: rgba(73, 234, 203, 0.1);
+}
+
+.kaspa-wallet-address {
+    font-family: 'Monaco', 'Menlo', monospace;
+    font-size: 0.85rem;
+    color: var(--kaspa-primary);
+}
+
+.kaspa-wallet-label {
+    font-size: 0.8rem;
+    color: var(--kaspa-light);
+    opacity: 0.7;
+    margin-top: 0.25rem;
+}
+
+.kaspa-wallet-badge {
+    display: inline-block;
+    padding: 0.25rem 0.5rem;
+    background: var(--kaspa-primary);
+    color: var(--kaspa-dark);
+    font-size: 0.7rem;
+    font-weight: 600;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+/* ============================================================
+   TRANSACTION HISTORY
+   ============================================================ */
+.kaspa-transaction-list {
+    margin-top: 1rem;
+}
+
+.kaspa-transaction-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: var(--kaspa-darker);
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.kaspa-tx-direction {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.kaspa-tx-direction.received {
+    color: var(--kaspa-success);
+}
+
+.kaspa-tx-direction.sent {
+    color: var(--kaspa-error);
+}
+
+.kaspa-tx-amount {
+    font-weight: 600;
+    color: var(--kaspa-primary);
+}
+
+.kaspa-tx-hash {
+    font-family: monospace;
+    font-size: 0.75rem;
+    color: var(--kaspa-secondary);
+}
+
+.kaspa-tx-hash a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.kaspa-tx-hash a:hover {
+    text-decoration: underline;
+}
+
+/* ============================================================
+   PAYMENT METHOD SELECTOR
+   ============================================================ */
+.kaspa-payment-option {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--kaspa-darker);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.kaspa-payment-option:hover {
+    border-color: rgba(73, 234, 203, 0.3);
+}
+
+.kaspa-payment-option.selected {
+    border-color: var(--kaspa-primary);
+    background: rgba(73, 234, 203, 0.1);
+}
+
+.kaspa-payment-option input[type="radio"] {
+    display: none;
+}
+
+.kaspa-payment-option .option-radio {
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--kaspa-secondary);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kaspa-payment-option.selected .option-radio {
+    border-color: var(--kaspa-primary);
+}
+
+.kaspa-payment-option.selected .option-radio::after {
+    content: '';
+    width: 10px;
+    height: 10px;
+    background: var(--kaspa-primary);
+    border-radius: 50%;
+}
+
+.kaspa-payment-option .option-icon {
+    font-size: 1.5rem;
+}
+
+.kaspa-payment-option .option-label {
+    flex: 1;
+}
+
+.kaspa-payment-option .option-name {
+    font-weight: 600;
+    color: var(--kaspa-light);
+}
+
+.kaspa-payment-option .option-desc {
+    font-size: 0.8rem;
+    color: var(--kaspa-light);
+    opacity: 0.7;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 480px) {
+    .kaspa-payment-widget {
+        padding: 1rem;
+        margin: 0.5rem;
+        max-width: 100%;
+    }
+    
+    .kaspa-amount-kas {
+        font-size: 1.5rem;
+    }
+    
+    .kaspa-address-value {
+        font-size: 0.75rem;
+    }
+}
