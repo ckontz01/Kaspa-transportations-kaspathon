@@ -19,6 +19,12 @@ Core capabilities include:
 - The team’s primary/official deployment is hosted on a university-managed server.
 - The application can also be deployed on commercial hosting infrastructure.
 
+### Geographic Showcase Scope
+
+- The current showcase configuration is designed for the **Republic of Cyprus**.
+- Seeded geofences, bridges, autonomous coverage, and carshare zones are Cyprus-specific in the default dataset.
+- To expand operational range to other cities/countries, seed new geofences (and related bridge/zone data) that cover the required service area.
+
 ---
 
 ## Compatibility Matrix
@@ -470,4 +476,5 @@ Use environment variables for production-sensitive values.
 ## Team Note
 
 This repository is suitable for local development and controlled deployments. The team’s official hosted version runs on university infrastructure, while commercial deployments are also possible when runtime and database compatibility requirements are satisfied.
+
 
