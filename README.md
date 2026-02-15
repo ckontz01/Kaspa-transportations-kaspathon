@@ -467,6 +467,7 @@ Use environment variables for production-sensitive values.
 
 ---
 
-## Academic/Team Note
+## Team Note
 
 This repository is suitable for local development and controlled deployments. The team’s official hosted version runs on university infrastructure, while commercial deployments are also possible when runtime and database compatibility requirements are satisfied.
+
