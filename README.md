@@ -1,6 +1,6 @@
-# OSRH Kaspa Ridehailing Platform
+# Kaspa Ridehailing Platform
 
-OSRH Kaspa Ridehailing is a full-stack smart mobility web platform built in PHP with a T-SQL database backend.Its an open-source alternative for transportation apps such as UBER, BOLT,WAYMO etc. Uses the ultra fast and secure Kaspa network for payments and several other features.
+Kaspa Ridehailing is a full-stack smart mobility web platform built in PHP with a T-SQL database backend.Its an open-source alternative for transportation apps such as UBER, BOLT,WAYMO etc. Uses the ultra fast and secure Kaspa network for payments and several other features.
 
 Core capabilities include:
 - Passenger, driver, and operator role-based workflows
@@ -476,6 +476,7 @@ Use environment variables for production-sensitive values.
 ## Team Note
 
 This repository is suitable for local development and controlled deployments. The team’s official hosted version runs on university infrastructure, while commercial deployments are also possible when runtime and database compatibility requirements are satisfied.
+
 
 
 
