@@ -17,7 +17,7 @@ export function ProtectedPage({
   const allowed = role ? (Array.isArray(role) ? role : [role]) : null;
 
   useEffect(() => {
-    if (state.phase !== "discovering" && !state.user) router.replace("/login");
+    if (state.sessionReady && !state.user) router.replace("/login");
     if (state.user && allowed && !allowed.includes(state.user.role)) {
       const area =
         state.user.role === "driver"
@@ -27,9 +27,9 @@ export function ProtectedPage({
             : "passenger";
       router.replace(`/${area}/dashboard`);
     }
-  }, [allowed, router, state.phase, state.user]);
+  }, [allowed, router, state.sessionReady, state.user]);
 
-  if (state.phase === "discovering" || !state.user) {
+  if (!state.sessionReady || !state.user) {
     return <div className="card page-loading">Loading your account…</div>;
   }
   if (allowed && !allowed.includes(state.user.role)) return null;

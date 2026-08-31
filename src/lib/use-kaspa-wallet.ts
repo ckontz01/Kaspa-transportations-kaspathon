@@ -25,6 +25,7 @@ export function useKaspaWallet() {
   const [providers, setProviders] = useState<KaspaProviderDetail[]>([]);
   const [active, setActive] = useState<KaspaProviderDetail | null>(null);
   const [user, setUser] = useState<ApiUser | null>(null);
+  const [sessionReady, setSessionReady] = useState(false);
   const [address, setAddress] = useState<string | null>(null);
   const [network, setNetwork] = useState<string | null>(null);
   const [phase, setPhase] = useState<WalletState["phase"]>("discovering");
@@ -79,6 +80,8 @@ export function useKaspaWallet() {
         current === "discovering" ? "discovering" : "idle",
       );
       return null;
+    } finally {
+      setSessionReady(true);
     }
   }, []);
 
@@ -234,13 +237,14 @@ export function useKaspaWallet() {
       providers,
       active,
       user,
+      sessionReady,
       address,
       network,
       phase,
       error,
       canSignCovenants: Boolean(active?.provider.signPskt && user),
     }),
-    [active, address, error, network, phase, providers, user],
+    [active, address, error, network, phase, providers, sessionReady, user],
   );
 
   return {

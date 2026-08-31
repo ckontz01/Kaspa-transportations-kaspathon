@@ -147,6 +147,7 @@ export type WalletState = {
   providers: KaspaProviderDetail[];
   active: KaspaProviderDetail | null;
   user: ApiUser | null;
+  sessionReady: boolean;
   address: string | null;
   network: string | null;
   phase: "discovering" | "idle" | "connecting" | "authenticated" | "error";
