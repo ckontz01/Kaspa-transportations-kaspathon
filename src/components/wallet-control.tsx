@@ -27,7 +27,9 @@ export function WalletControl({ state, connect, disconnect }: Props) {
     if (open) {
       wasOpen.current = true;
       requestAnimationFrame(() => {
-        dialogRef.current?.querySelector<HTMLElement>("button:not([disabled])")?.focus();
+        dialogRef.current
+          ?.querySelector<HTMLElement>("button:not([disabled])")
+          ?.focus();
       });
       const closeOnEscape = (event: KeyboardEvent) => {
         if (event.key === "Escape") setOpen(false);
@@ -60,13 +62,17 @@ export function WalletControl({ state, connect, disconnect }: Props) {
     }
   };
 
-  if (state.user) {
+  if (state.user?.address) {
     const short = `${state.user.address.slice(0, 13)}…${state.user.address.slice(-6)}`;
     return (
       <div className="wallet-session">
         <span className="wallet-indicator" aria-hidden="true" />
         <span className="wallet-address">{short}</span>
-        <button className="wallet-disconnect" type="button" onClick={() => void disconnect()}>
+        <button
+          className="wallet-disconnect"
+          type="button"
+          onClick={() => void disconnect()}
+        >
           Disconnect
         </button>
       </div>
@@ -104,7 +110,9 @@ export function WalletControl({ state, connect, disconnect }: Props) {
             <div className="dialog-heading">
               <div>
                 <h2 id="wallet-dialog-title">Select a Kaspa wallet</h2>
-                <p>Selection is required again each session before any signature.</p>
+                <p>
+                  Selection is required again each session before any signature.
+                </p>
               </div>
               <button
                 type="button"
@@ -119,7 +127,8 @@ export function WalletControl({ state, connect, disconnect }: Props) {
               {state.providers.length ? (
                 state.providers.map((detail) => {
                   const key = detail.info.rdns ?? detail.info.uuid;
-                  const loading = selected === key && state.phase === "connecting";
+                  const loading =
+                    selected === key && state.phase === "connecting";
                   return (
                     <button
                       type="button"
@@ -142,7 +151,12 @@ export function WalletControl({ state, connect, disconnect }: Props) {
                       {detail.info.icon ? (
                         // KIP-12 discovery strips every non-data URI before it reaches this component.
                         // eslint-disable-next-line @next/next/no-img-element
-                        <img src={detail.info.icon} alt="" width={32} height={32} />
+                        <img
+                          src={detail.info.icon}
+                          alt=""
+                          width={32}
+                          height={32}
+                        />
                       ) : (
                         <span className="wallet-fallback" aria-hidden="true">
                           <Wallet size={18} strokeWidth={1.8} />
@@ -151,7 +165,9 @@ export function WalletControl({ state, connect, disconnect }: Props) {
                       <span>
                         <strong>{detail.info.name}</strong>
                         <small>
-                          {detail.provider.signPskt ? "Covenant signing available" : "No signPskt support"}
+                          {detail.provider.signPskt
+                            ? "Covenant signing available"
+                            : "No signPskt support"}
                         </small>
                       </span>
                       <em>{loading ? "Check wallet" : "Select"}</em>
@@ -162,14 +178,17 @@ export function WalletControl({ state, connect, disconnect }: Props) {
                 <div className="wallet-empty">
                   <Wallet aria-hidden="true" size={24} strokeWidth={1.6} />
                   <p>No KIP-12 provider announced itself on this page.</p>
-                  <small>Install or unlock a compatible wallet, then reopen this selector.</small>
+                  <small>
+                    Install or unlock a compatible wallet, then reopen this
+                    selector.
+                  </small>
                 </div>
               )}
             </div>
             {state.error ? <p className="inline-error">{state.error}</p> : null}
             <p className="trust-note">
-              Wallet names and icons are display hints. Your wallet extension&apos;s own prompt is the
-              signature trust boundary.
+              Wallet names and icons are display hints. Your wallet
+              extension&apos;s own prompt is the signature trust boundary.
             </p>
           </section>
         </div>

@@ -17,15 +17,18 @@
   },
   "dependencies": {
     "kaspa-wallet-standard": "0.3.0",
+    "leaflet": "^1.9.4",
     "lucide-react": "1.37.0",
     "next": "16.3.3",
     "react": "19.2.8",
-    "react-dom": "19.2.8"
+    "react-dom": "19.2.8",
+    "react-leaflet": "^5.0.0"
   },
   "devDependencies": {
     "@playwright/test": "1.62.1",
     "@testing-library/jest-dom": "6.9.1",
     "@testing-library/react": "16.3.0",
+    "@types/leaflet": "^1.9.22",
     "@types/node": "24.3.0",
     "@types/react": "19.2.2",
     "@types/react-dom": "19.2.2",

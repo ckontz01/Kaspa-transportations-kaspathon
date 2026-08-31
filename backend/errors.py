@@ -13,11 +13,11 @@ def bad_request(message: str, code: str = "bad_request") -> AppError:
     return AppError(400, message, code)
 
 
-def unauthorized(message: str = "Wallet authentication is required") -> AppError:
+def unauthorized(message: str = "Authentication is required") -> AppError:
     return AppError(401, message, "unauthorized")
 
 
-def forbidden(message: str = "This wallet cannot perform that action") -> AppError:
+def forbidden(message: str = "This account cannot perform that action") -> AppError:
     return AppError(403, message, "forbidden")
 
 

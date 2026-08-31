@@ -1,6 +1,6 @@
 # Kaspa Transportations — covenant ride payments
 
-The normal ride-hailing path has been rebuilt as a wallet-native Next.js and FastAPI application. A passenger funds an exact-fare Kaspa transaction-v1 covenant before dispatch; driver acceptance changes the covenant state; completion, cancellation, disputes, and timeout refunds are constrained by the UTXO itself.
+The original OSRH product has been rebuilt as a Next.js and FastAPI application while retaining its familiar interface, maps, password accounts, passenger and driver registration, dashboards, messaging, profiles, mobility products, and operator tooling. For normal driver rides, a passenger links a Kaspa wallet and funds an exact-fare transaction-v1 covenant before dispatch; driver acceptance changes covenant state, while completion, cancellation, disputes, and timeout refunds are constrained by the UTXO itself.
 
 The current deployment target is `testnet-10`. Toccata consensus features are live on Kaspa mainnet, but [SilverScript is still explicitly experimental](https://github.com/kaspanet/silverscript/blob/master/README.md) and has an open critical compiler advisory. Mainnet covenant creation therefore fails closed until an independent contract/artifact audit is completed.
 
@@ -8,14 +8,14 @@ The current deployment target is `testnet-10`. Toccata consensus features are li
 
 | Legacy | Replacement |
 | --- | --- |
-| PHP pages and mutable session auth | Next.js 16 App Router, React 19, TypeScript, signed-wallet authentication |
+| PHP pages and mutable server sessions | Next.js 16 App Router, React 19, TypeScript, Argon2id password accounts, revocable Atlas sessions, and separately linked signed wallets |
 | SQL Server tables, procedures, and race-prone dispatch writes | MongoDB Atlas transactions, optimistic versions, unique active-ride indexes, TTL locks |
 | University PHP server | One Vercel project with a static Next.js frontend and FastAPI function |
 | Pay the driver after the trip and poll an explorer | Upfront transaction-v1 covenant escrow, direct Kaspa RPC reconciliation |
 | Server-trusted payment status | On-chain covenant lineage plus idempotent database projections |
 | Backend-held payment authority | Explicit KIP-12 wallet signing; no routine server private key |
 
-The PHP and T-SQL directories remain as migration evidence, but `.vercelignore` excludes them from the new deployment. Car-sharing and autonomous mobility are intentionally outside this phase.
+The PHP and T-SQL directories remain as migration evidence, but `.vercelignore` excludes them from the new deployment. Autonomous rides and car-sharing retain their original non-covenant payment selection; SilverScript escrow is intentionally limited to normal driver rides in this phase.
 
 ## Payment protocol
 
@@ -78,7 +78,7 @@ npm run build
 .\.venv\Scripts\python.exe -m pytest
 ```
 
-The test suite covers contract artifact integrity, state encoding, ABI unlocking vectors, transaction-v1 construction, KIP-5 authentication, protected wallet-signing fields, terminal fingerprints, legacy migration, and the compiler-advisory-safe language subset.
+The test suite covers account validation, Argon2id authentication, sensitive-identifier handling, contract artifact integrity, state encoding, ABI unlocking vectors, transaction-v1 construction, KIP-5 authentication, protected wallet-signing fields, terminal fingerprints, legacy migration, and the compiler-advisory-safe language subset.
 
 ## Configuration
 
@@ -140,7 +140,7 @@ api/                     FastAPI routes deployed by Vercel
 backend/                 auth, MongoDB, covenant, transactions, services
 contracts/               SilverScript source, pinned artifact, ABI fixture
 src/                     Next.js application and KIP-12 wallet client
-scripts/                 contract generator and SQL Server migration
+scripts/                 contract generation, operator bootstrap, and SQL migration
 tests/                   Python, Vitest, and browser tests
 OSRH_KASPA_PHP/          legacy reference only; not deployed
 Database/                legacy SQL reference only; not deployed
@@ -148,6 +148,6 @@ Database/                legacy SQL reference only; not deployed
 
 ## Scope
 
-This release replaces the normal ride request, dispatch, escrow, signing, start, settlement, cancellation, refund, and history-migration paths. Car-sharing, autonomous rides, operator back-office features, document uploads, and the legacy geofence simulator have not been ported into the new runtime.
+This release ports the original passenger, driver, and operator interface and feature surface to the new runtime. That includes registration and login, profiles and privacy preferences, maps and Cyprus geofences, normal ride request/dispatch/tracking/history, covenant funding and settlement, vehicles and safety inspections, earnings and payments, document review, messaging, GDPR operations, autonomous rides, car-sharing, fleet maps, audit logs, and operational reporting. Only the normal driver-ride payment path uses SilverScript covenants, matching the requested scope.
 
 License: MIT.

@@ -16,7 +16,9 @@ coverage/
 playwright-report/
 test-results/
 tests/
-OSRH_KASPA_PHP/
+OSRH_KASPA_PHP/**/*.php
+OSRH_KASPA_PHP/uploads/
+OSRH_KASPA_PHP/assets/js/
 Database/
 contracts/fixtures/
 .hallmark/

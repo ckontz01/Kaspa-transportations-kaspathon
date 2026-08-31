@@ -29,15 +29,27 @@ def json_value(value: Any) -> Any:
 
 
 def public_user(user: Mapping[str, Any]) -> dict[str, Any]:
+    account_id = user.get("accountId")
     return json_value(
         {
-            "_id": user["_id"],
-            "address": user["address"],
-            "displayName": user.get("displayName"),
-            "publicKey": user["publicKey"],
-            "publicKeyHash": user["publicKeyHash"],
-            "network": user["network"],
-            "createdAt": user["createdAt"],
+            "_id": account_id or user["_id"],
+            "paymentIdentityId": user["_id"] if user.get("address") else None,
+            "address": user.get("address"),
+            "displayName": user.get("displayName") or user.get("fullName"),
+            "fullName": user.get("fullName") or user.get("displayName"),
+            "email": user.get("email"),
+            "phone": user.get("phone"),
+            "role": user.get("role", "passenger"),
+            "status": user.get("status", "active"),
+            "verificationStatus": user.get("verificationStatus"),
+            "publicKey": user.get("publicKey"),
+            "publicKeyHash": user.get("publicKeyHash"),
+            "network": user.get("network"),
+            "addressProfile": user.get("addressProfile", {}),
+            "preferences": user.get("preferences", {}),
+            "driverProfile": user.get("driverProfile"),
+            "createdAt": user.get("createdAt"),
+            "updatedAt": user.get("updatedAt"),
         }
     )
 

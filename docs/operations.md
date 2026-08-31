@@ -43,6 +43,22 @@ After deployment, verify:
 6. a testnet wallet can request and sign a challenge;
 7. a funded test ride follows the full accept/settle or cancel path.
 
+## Bootstrap the first operator
+
+Public registration creates only passenger or driver accounts. After the intended
+operator has registered normally, assign the privileged role from a trusted local
+checkout with the Vercel development environment pulled:
+
+```powershell
+uv run python scripts\promote_operator.py --email operator@example.com
+```
+
+The command requires the email to be typed a second time, changes the role and
+writes its audit record in one Atlas transaction, and exposes no privilege-change
+endpoint to the public application. Use `--role admin` only for an account that
+needs the broader administrative role. The user's next authenticated request reads
+the new role directly from Atlas.
+
 ## Rotate secrets
 
 For `SESSION_SECRET` or `INTERNAL_RECONCILER_SECRET`, generate 32 random bytes, replace the variable in all Vercel environments, and redeploy. Rotating the session secret invalidates the assumptions around current sessions; revoke session documents if an immediate global logout is required.

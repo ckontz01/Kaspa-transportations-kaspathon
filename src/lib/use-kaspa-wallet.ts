@@ -31,7 +31,11 @@ export function useKaspaWallet() {
     const unsubscribe = requestKaspaWallets((detail) => {
       const identity = detail.info.rdns ?? detail.info.uuid;
       setProviders((current) => {
-        if (current.some((item) => (item.info.rdns ?? item.info.uuid) === identity)) {
+        if (
+          current.some(
+            (item) => (item.info.rdns ?? item.info.uuid) === identity,
+          )
+        ) {
           return current;
         }
         return [...current, detail];
@@ -53,9 +57,16 @@ export function useKaspaWallet() {
       setUser(session.user);
       setAddress(session.user.address);
       setNetwork(session.network);
+      setPhase("authenticated");
+      setError(null);
       return session.user;
     } catch {
       setUser(null);
+      setAddress(null);
+      setNetwork(null);
+      setPhase((current) =>
+        current === "discovering" ? "discovering" : "idle",
+      );
       return null;
     }
   }, []);
@@ -69,7 +80,9 @@ export function useKaspaWallet() {
     const invalidate = () => {
       setActive(null);
       setPhase("idle");
-      setError("Wallet account or network changed. Select the wallet again before signing.");
+      setError(
+        "Wallet account or network changed. Select the wallet again before signing.",
+      );
     };
     active.provider.on("accountsChanged", invalidate);
     active.provider.on("chainChanged", invalidate);
@@ -79,65 +92,96 @@ export function useKaspaWallet() {
     };
   }, [active]);
 
-  const connect = useCallback(async (detail: KaspaProviderDetail) => {
-    setPhase("connecting");
-    setError(null);
-    try {
-      const provider = detail.provider;
-      if (!provider.getPublicKey || !provider.getNetwork || !provider.signMessage) {
-        throw new Error("This wallet cannot provide KIP-5 authentication capabilities.");
+  const connect = useCallback(
+    async (detail: KaspaProviderDetail) => {
+      setPhase("connecting");
+      setError(null);
+      try {
+        const provider = detail.provider;
+        if (
+          !provider.getPublicKey ||
+          !provider.getNetwork ||
+          !provider.signMessage
+        ) {
+          throw new Error(
+            "This wallet cannot provide KIP-5 authentication capabilities.",
+          );
+        }
+        if (!provider.signPskt) {
+          throw new Error(
+            "This wallet does not expose KIP-12 signPskt for covenant transactions.",
+          );
+        }
+        const accounts = await provider.requestAccounts();
+        if (!accounts[0]) throw new Error("The wallet returned no account.");
+        let walletNetwork = normalizeKaspaNetworkId(
+          await provider.getNetwork(),
+        );
+        if (walletNetwork !== REQUIRED_NETWORK && provider.switchNetwork) {
+          await provider.switchNetwork(REQUIRED_NETWORK);
+          walletNetwork = normalizeKaspaNetworkId(await provider.getNetwork());
+        }
+        if (walletNetwork !== REQUIRED_NETWORK) {
+          throw new Error(
+            `Switch the wallet to ${REQUIRED_NETWORK} and connect again.`,
+          );
+        }
+        const publicKey = await provider.getPublicKey();
+        const challenge = await apiRequest<{
+          challengeId: string;
+          message: string;
+        }>("/api/v1/auth/challenge", {
+          method: "POST",
+          body: JSON.stringify({
+            address: accounts[0],
+            publicKey,
+            network: walletNetwork,
+          }),
+        });
+        const signature = await provider.signMessage(challenge.message);
+        const verificationEndpoint = user?.email
+          ? "/api/v1/accounts/link-wallet"
+          : "/api/v1/auth/verify";
+        const verified = await apiRequest<SessionResponse>(
+          verificationEndpoint,
+          {
+            method: "POST",
+            body: JSON.stringify({
+              address: accounts[0],
+              publicKey,
+              network: walletNetwork,
+              challengeId: challenge.challengeId,
+              signature,
+            }),
+          },
+        );
+        setActive(detail);
+        setAddress(verified.user.address);
+        setNetwork(verified.network);
+        setUser(verified.user);
+        setPhase("authenticated");
+        return verified.user;
+      } catch (caught) {
+        setActive(null);
+        setPhase("error");
+        setError(errorMessage(caught));
+        throw caught;
       }
-      if (!provider.signPskt) {
-        throw new Error("This wallet does not expose KIP-12 signPskt for covenant transactions.");
-      }
-      const accounts = await provider.requestAccounts();
-      if (!accounts[0]) throw new Error("The wallet returned no account.");
-      let walletNetwork = normalizeKaspaNetworkId(await provider.getNetwork());
-      if (walletNetwork !== REQUIRED_NETWORK && provider.switchNetwork) {
-        await provider.switchNetwork(REQUIRED_NETWORK);
-        walletNetwork = normalizeKaspaNetworkId(await provider.getNetwork());
-      }
-      if (walletNetwork !== REQUIRED_NETWORK) {
-        throw new Error(`Switch the wallet to ${REQUIRED_NETWORK} and connect again.`);
-      }
-      const publicKey = await provider.getPublicKey();
-      const challenge = await apiRequest<{
-        challengeId: string;
-        message: string;
-      }>("/api/v1/auth/challenge", {
-        method: "POST",
-        body: JSON.stringify({
-          address: accounts[0],
-          publicKey,
-          network: walletNetwork,
-        }),
-      });
-      const signature = await provider.signMessage(challenge.message);
-      const verified = await apiRequest<SessionResponse>("/api/v1/auth/verify", {
-        method: "POST",
-        body: JSON.stringify({
-          address: accounts[0],
-          publicKey,
-          network: walletNetwork,
-          challengeId: challenge.challengeId,
-          signature,
-        }),
-      });
-      setActive(detail);
-      setAddress(verified.user.address);
-      setNetwork(verified.network);
-      setUser(verified.user);
-      setPhase("authenticated");
-      return verified.user;
-    } catch (caught) {
-      setActive(null);
-      setPhase("error");
-      setError(errorMessage(caught));
-      throw caught;
-    }
-  }, []);
+    },
+    [user?.email],
+  );
 
   const disconnect = useCallback(async () => {
+    try {
+      await active?.provider.disconnect?.(window.location.origin);
+    } finally {
+      setActive(null);
+      setPhase("idle");
+      setError(null);
+    }
+  }, [active]);
+
+  const logout = useCallback(async () => {
     try {
       await apiRequest<void>("/api/v1/session", { method: "DELETE" });
       await active?.provider.disconnect?.(window.location.origin);
@@ -155,7 +199,9 @@ export function useKaspaWallet() {
     async (draft: SigningDraft): Promise<SubmitDraftResult> => {
       const provider = active?.provider;
       if (!provider?.signPskt) {
-        throw new Error("Select a KIP-12 wallet again before signing this transaction.");
+        throw new Error(
+          "Select a KIP-12 wallet again before signing this transaction.",
+        );
       }
       const signed = await provider.signPskt({
         txJsonString: draft.transactionJson,
@@ -186,5 +232,13 @@ export function useKaspaWallet() {
     [active, address, error, network, phase, providers, user],
   );
 
-  return { state, connect, disconnect, signDraft, refreshSession, setError };
+  return {
+    state,
+    connect,
+    disconnect,
+    logout,
+    signDraft,
+    refreshSession,
+    setError,
+  };
 }

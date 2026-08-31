@@ -2,12 +2,39 @@ import type { KaspaProviderDetail } from "kaspa-wallet-standard";
 
 export type ApiUser = {
   id: string;
-  address: string;
+  paymentIdentityId?: string | null;
+  address: string | null;
   displayName: string | null;
-  publicKey: string;
-  publicKeyHash: string;
-  network: string;
+  fullName?: string | null;
+  email?: string | null;
+  phone?: string | null;
+  role: "passenger" | "driver" | "operator" | "admin";
+  status: string;
+  verificationStatus?: string | null;
+  publicKey: string | null;
+  publicKeyHash: string | null;
+  network: string | null;
+  addressProfile?: {
+    streetAddress?: string | null;
+    city?: string | null;
+    postalCode?: string | null;
+    country?: string | null;
+  };
+  preferences?: {
+    locationTracking?: boolean;
+    notifications?: boolean;
+    emailUpdates?: boolean;
+    dataSharing?: boolean;
+  };
+  driverProfile?: {
+    isAvailable?: boolean;
+    activeVehicleId?: string | null;
+    useGps?: boolean;
+    currentLatitude?: number | null;
+    currentLongitude?: number | null;
+  } | null;
   createdAt: string;
+  updatedAt?: string | null;
 };
 
 export type LocationInput = {
@@ -25,6 +52,11 @@ export type RideQuote = {
   quotedFareSompi: string;
   quotedFareKas: string;
   pricingVersion: string;
+  serviceType: "standard" | "comfort" | "accessible" | "cargo";
+  luggageVolume?: number | null;
+  wheelchairNeeded: boolean;
+  passengerNotes?: string | null;
+  useSimulation: boolean;
   expiresAt: string;
 };
 
@@ -69,6 +101,11 @@ export type Ride = {
   estimatedDurationSeconds: number;
   quotedFareSompi: number;
   pricingVersion: string;
+  serviceType?: "standard" | "comfort" | "accessible" | "cargo";
+  luggageVolume?: number | null;
+  wheelchairNeeded?: boolean;
+  passengerNotes?: string | null;
+  useSimulation?: boolean;
   rideCommitment: string;
   status: RideStatus;
   version: number;
@@ -115,6 +152,49 @@ export type WalletState = {
   phase: "discovering" | "idle" | "connecting" | "authenticated" | "error";
   error: string | null;
   canSignCovenants: boolean;
+};
+
+export type Vehicle = {
+  id: string;
+  vehicleType: string;
+  plateNumber: string;
+  make: string;
+  model: string;
+  year: number;
+  color?: string | null;
+  seatingCapacity: number;
+  wheelchairReady: boolean;
+  status: string;
+  isActive: boolean;
+};
+
+export type PaymentRecord = {
+  id: string;
+  rideId: string;
+  status: string;
+  kind: string;
+  transactionId?: string | null;
+  amountSompi: number;
+  beneficiaryAddress?: string | null;
+  createdAt: string;
+  pickup: LocationInput;
+  dropoff: LocationInput;
+};
+
+export type Contact = {
+  id: string;
+  fullName: string;
+  role: ApiUser["role"];
+  status: string;
+};
+
+export type MessageRecord = {
+  id: string;
+  senderId: string;
+  recipientId: string;
+  content: string;
+  createdAt: string;
+  readAt?: string | null;
 };
 
 export type SubmitDraftResult = {

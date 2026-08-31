@@ -13,6 +13,7 @@ from pymongo import ReturnDocument
 from pymongo.database import Database
 from pymongo.errors import DuplicateKeyError, PyMongoError
 
+from backend.accounts import hydrate_account_principal
 from backend.covenant import RideEscrowState, protocol_metadata
 from backend.db import utcnow
 from backend.errors import bad_request, conflict, forbidden, not_found, unauthorized, unavailable
@@ -173,18 +174,25 @@ def verify_auth_challenge(
     if not user:
         raise unavailable("Could not create the wallet account")
     session_token, session_hash, expires_at = new_session_token()
-    db.sessions.insert_one(
-        {
-            "tokenHash": session_hash,
-            "userId": user["_id"],
-            "address": identity.address,
-            "createdAt": now,
-            "lastSeenAt": now,
-            "expiresAt": expires_at,
-            "revokedAt": None,
-        }
-    )
-    return public_user(user), session_token, expires_at
+    session_document: dict[str, Any] = {
+        "tokenHash": session_hash,
+        "userId": user["_id"],
+        "address": identity.address,
+        "principalType": "wallet",
+        "createdAt": now,
+        "lastSeenAt": now,
+        "expiresAt": expires_at,
+        "revokedAt": None,
+    }
+    principal = user
+    if user.get("accountId") is not None:
+        account = db.accounts.find_one({"_id": user["accountId"]})
+        if account:
+            session_document["accountId"] = account["_id"]
+            session_document["principalType"] = "account"
+            principal = hydrate_account_principal(db, account)
+    db.sessions.insert_one(session_document)
+    return public_user(principal), session_token, expires_at
 
 
 def authenticated_user(
@@ -200,10 +208,21 @@ def authenticated_user(
         }
     )
     if not session:
-        raise unauthorized("The wallet session expired; sign in again")
-    user = db.users.find_one({"_id": session["userId"]})
-    if not user:
-        raise unauthorized("The wallet account no longer exists")
+        raise unauthorized("The session expired; sign in again")
+    if session.get("accountId") is not None:
+        account = db.accounts.find_one({"_id": session["accountId"]})
+        if not account:
+            raise unauthorized("The OSRH account no longer exists")
+        user = hydrate_account_principal(db, account)
+    else:
+        user = db.users.find_one({"_id": session.get("userId")})
+        if not user:
+            raise unauthorized("The wallet account no longer exists")
+        user = {
+            **user,
+            "role": user.get("role", "passenger"),
+            "status": user.get("status", "active"),
+        }
     db.sessions.update_one(
         {"_id": session["_id"]}, {"$set": {"lastSeenAt": utcnow()}}
     )
@@ -221,6 +240,19 @@ def revoke_session(db: Database[dict[str, Any]], session_token: str | None) -> N
 def update_display_name(
     db: Database[dict[str, Any]], user: Mapping[str, Any], display_name: str
 ) -> dict[str, Any]:
+    if user.get("accountId") is not None:
+        updated_account = db.accounts.find_one_and_update(
+            {"_id": user["accountId"]},
+            {"$set": {"fullName": display_name, "updatedAt": utcnow()}},
+            return_document=ReturnDocument.AFTER,
+        )
+        if not updated_account:
+            raise not_found("OSRH account not found")
+        db.users.update_one(
+            {"accountId": user["accountId"]},
+            {"$set": {"displayName": display_name, "updatedAt": utcnow()}},
+        )
+        return public_user(hydrate_account_principal(db, updated_account))
     updated = db.users.find_one_and_update(
         {"_id": user["_id"]},
         {"$set": {"displayName": display_name, "updatedAt": utcnow()}},
@@ -274,6 +306,11 @@ def create_quote(
         "estimatedDurationSeconds": duration_seconds,
         "quotedFareSompi": fare,
         "pricingVersion": PRICING_VERSION,
+        "serviceType": request.service_type,
+        "luggageVolume": request.luggage_volume,
+        "wheelchairNeeded": request.wheelchair_needed,
+        "passengerNotes": request.passenger_notes,
+        "useSimulation": request.use_simulation,
         "createdAt": now,
         "expiresAt": now + QUOTE_TTL,
         "usedAt": None,
@@ -289,6 +326,11 @@ def create_quote(
         "quotedFareSompi": str(fare),
         "quotedFareKas": f"{fare / 100_000_000:.8f}".rstrip("0").rstrip("."),
         "pricingVersion": PRICING_VERSION,
+        "serviceType": quote["serviceType"],
+        "luggageVolume": quote.get("luggageVolume"),
+        "wheelchairNeeded": quote.get("wheelchairNeeded", False),
+        "passengerNotes": quote.get("passengerNotes"),
+        "useSimulation": quote.get("useSimulation", False),
         "expiresAt": quote["expiresAt"].isoformat(),
     }
 
@@ -339,6 +381,10 @@ def create_ride(
                 "pickup": quote["pickup"],
                 "dropoff": quote["dropoff"],
                 "pricingVersion": quote["pricingVersion"],
+                "serviceType": quote.get("serviceType", "standard"),
+                "luggageVolume": quote.get("luggageVolume"),
+                "wheelchairNeeded": quote.get("wheelchairNeeded", False),
+                "passengerNotes": quote.get("passengerNotes"),
             },
             sort_keys=True,
             separators=(",", ":"),
@@ -365,6 +411,11 @@ def create_ride(
             "estimatedDurationSeconds": quote["estimatedDurationSeconds"],
             "quotedFareSompi": int(quote["quotedFareSompi"]),
             "pricingVersion": quote["pricingVersion"],
+            "serviceType": quote.get("serviceType", "standard"),
+            "luggageVolume": quote.get("luggageVolume"),
+            "wheelchairNeeded": quote.get("wheelchairNeeded", False),
+            "passengerNotes": quote.get("passengerNotes"),
+            "useSimulation": quote.get("useSimulation", False),
             "rideCommitment": commitment,
             "status": "awaiting_funding",
             "version": 0,
