@@ -3,10 +3,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   normalizeKaspaNetworkId,
-  requestKaspaWallets,
   type KaspaProviderDetail,
 } from "kaspa-wallet-standard";
 import { apiRequest, errorMessage } from "@/lib/api";
+import {
+  subscribeKaspaWallets,
+  WALLET_DISCOVERY_TIMEOUT_MS,
+} from "@/lib/kaspa-wallet-discovery";
 import type {
   ApiUser,
   SigningDraft,
@@ -26,9 +29,10 @@ export function useKaspaWallet() {
   const [network, setNetwork] = useState<string | null>(null);
   const [phase, setPhase] = useState<WalletState["phase"]>("discovering");
   const [error, setError] = useState<string | null>(null);
+  const [discoveryAttempt, setDiscoveryAttempt] = useState(0);
 
   useEffect(() => {
-    const unsubscribe = requestKaspaWallets((detail) => {
+    const unsubscribe = subscribeKaspaWallets((detail) => {
       const identity = detail.info.rdns ?? detail.info.uuid;
       setProviders((current) => {
         if (
@@ -44,11 +48,18 @@ export function useKaspaWallet() {
     });
     const timer = window.setTimeout(() => {
       setPhase((current) => (current === "discovering" ? "idle" : current));
-    }, 500);
+    }, WALLET_DISCOVERY_TIMEOUT_MS);
     return () => {
       unsubscribe();
       window.clearTimeout(timer);
     };
+  }, [discoveryAttempt]);
+
+  const rediscover = useCallback(() => {
+    setProviders([]);
+    setError(null);
+    setPhase("discovering");
+    setDiscoveryAttempt((current) => current + 1);
   }, []);
 
   const refreshSession = useCallback(async () => {
@@ -239,6 +250,7 @@ export function useKaspaWallet() {
     logout,
     signDraft,
     refreshSession,
+    rediscover,
     setError,
   };
 }

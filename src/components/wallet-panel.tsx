@@ -7,7 +7,7 @@ function shortAddress(value: string) {
 }
 
 export function WalletPanel({ compact = false }: { compact?: boolean }) {
-  const { state, connect, disconnect } = useOsrh();
+  const { state, connect, disconnect, rediscover } = useOsrh();
   const connected = Boolean(state.active && state.user?.address);
 
   return (
@@ -64,10 +64,36 @@ export function WalletPanel({ compact = false }: { compact?: boolean }) {
             );
           })
         ) : (
-          <p className="form-help">
-            No KIP-12 wallet was detected. Install or open a compatible Kaspa
-            wallet, then refresh.
-          </p>
+          <div className="wallet-compatibility">
+            <p className="form-help">
+              <strong>KasWare:</strong> open this site in Chrome, Edge, or Brave
+              where the extension is installed and unlocked. Browser extensions
+              are not injected into most embedded or in-app browsers.
+            </p>
+            <p className="form-help">
+              <strong>Kaspium:</strong> the current mobile wallet does not
+              expose KIP-12 <code>signPskt</code> to websites, so it cannot
+              authorize a covenant ride yet.
+            </p>
+            <div className="wallet-provider-actions">
+              <button
+                type="button"
+                className="btn btn-outline btn-small"
+                disabled={state.phase === "discovering"}
+                onClick={rediscover}
+              >
+                {state.phase === "discovering" ? "Checking…" : "Detect again"}
+              </button>
+              <a
+                className="btn btn-secondary btn-small"
+                href="https://www.kasware.xyz/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                KasWare website
+              </a>
+            </div>
+          </div>
         )}
       </div>
     </section>

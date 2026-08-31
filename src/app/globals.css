@@ -461,6 +461,25 @@ select.form-control {
   width: 100%;
 }
 
+.wallet-compatibility {
+  display: grid;
+  gap: 0.65rem;
+  padding: 0.75rem;
+  border: 1px solid rgba(245, 158, 11, 0.22);
+  border-radius: var(--radius-sm);
+  background: rgba(245, 158, 11, 0.06);
+}
+
+.wallet-compatibility code {
+  color: #fde68a;
+}
+
+.wallet-provider-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem;
+}
+
 .wallet-explainer {
   font-size: 0.82rem;
   line-height: 1.55;
@@ -927,7 +946,8 @@ select.form-control {
   .stats-grid,
   .quick-actions,
   .feature-action-grid,
-  .messages-layout {
+  .messages-layout,
+  .wallet-provider-actions {
     grid-template-columns: 1fr;
   }
 

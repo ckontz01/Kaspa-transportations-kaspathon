@@ -41,6 +41,12 @@ See [`docs/architecture.md`](docs/architecture.md) for the state machine and [`d
 
 Prerequisites are Node.js 24, Python 3.12+, and a KIP-12 wallet capable of `signPskt`.
 
+KasWare is supported through both KIP-12 provider announcements and its current
+`window.kasware` browser-extension API. Open the site in the same Chrome,
+Edge, or Brave profile where KasWare is installed. Kaspium can receive ordinary
+Kaspa payment URIs, but its current mobile application does not expose a dApp
+provider or `signPskt`, so it cannot authorize covenant inputs.
+
 ```powershell
 npm install
 python -m venv .venv
