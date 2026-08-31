@@ -5,6 +5,7 @@ import { FormEvent, useCallback, useState } from "react";
 import {
   Check,
   Clock3,
+  Crosshair,
   MapPin,
   Navigation,
   ShieldCheck,
@@ -155,19 +156,21 @@ export function PassengerRequestPage() {
                   type="button"
                   className={`btn btn-outline btn-small${selectionMode === "pickup" ? " active" : ""}`}
                   aria-pressed={selectionMode === "pickup"}
+                  aria-label="Choose pickup point on the map"
                   onClick={() => setSelectionMode("pickup")}
                 >
                   <span className="stop-dot pickup" aria-hidden="true" />
-                  Set pickup
+                  Pickup
                 </button>
                 <button
                   type="button"
                   className={`btn btn-outline btn-small${selectionMode === "dropoff" ? " active" : ""}`}
                   aria-pressed={selectionMode === "dropoff"}
+                  aria-label="Choose destination point on the map"
                   onClick={() => setSelectionMode("dropoff")}
                 >
                   <MapPin aria-hidden="true" size={15} />
-                  Set destination
+                  Drop-off
                 </button>
               </div>
               <span className="map-mode">
@@ -220,14 +223,40 @@ export function PassengerRequestPage() {
                 title="Pickup"
                 location={pickup}
                 onChange={updateField}
+                onFocus={() => setSelectionMode("pickup")}
               />
               <LocationFields
                 mode="dropoff"
                 title="Destination"
                 location={dropoff}
                 onChange={updateField}
+                onFocus={() => setSelectionMode("dropoff")}
               />
             </div>
+
+            <details className="booking-coordinates">
+              <summary>
+                <Crosshair aria-hidden="true" size={18} />
+                <span>
+                  <strong>Exact coordinates</strong>
+                  <small>Advanced route positioning</small>
+                </span>
+              </summary>
+              <div className="booking-coordinate-grid">
+                <CoordinateFields
+                  mode="pickup"
+                  title="Pickup"
+                  location={pickup}
+                  onChange={updateField}
+                />
+                <CoordinateFields
+                  mode="dropoff"
+                  title="Destination"
+                  location={dropoff}
+                  onChange={updateField}
+                />
+              </div>
+            </details>
 
             <div className="form-group booking-service-field">
               <label className="form-label" htmlFor="serviceType">
@@ -345,9 +374,20 @@ export function PassengerRequestPage() {
                     and timeout refunds follow covenant rules.
                   </span>
                 </div>
+                {!state.canSignCovenants ? (
+                  <div className="quote-wallet-warning" role="status">
+                    <WalletCards aria-hidden="true" size={18} />
+                    <span>
+                      <strong>Escrow signature needed later</strong>
+                      {state.active
+                        ? `${state.active.info.name} can verify this account but does not expose KIP-12 signPskt.`
+                        : "Reconnect a covenant-capable wallet on the ride page before funding escrow."}
+                    </span>
+                  </div>
+                ) : null}
                 <button
                   type="button"
-                  className="btn btn-primary btn-block booking-primary-action"
+                  className="btn btn-primary btn-block booking-primary-action booking-confirm-action"
                   onClick={() => void confirmRide()}
                   disabled={loading !== null}
                 >
@@ -358,7 +398,7 @@ export function PassengerRequestPage() {
                       <Check aria-hidden="true" size={18} />
                       {state.canSignCovenants
                         ? "Confirm ride & sign escrow"
-                        : "Confirm ride"}
+                        : "Create ride · sign later"}
                     </>
                   )}
                 </button>
@@ -399,6 +439,7 @@ function LocationFields({
   title,
   location,
   onChange,
+  onFocus,
 }: {
   mode: SelectionMode;
   title: string;
@@ -408,6 +449,7 @@ function LocationFields({
     field: keyof LocationInput,
     value: string,
   ) => void;
+  onFocus: () => void;
 }) {
   return (
     <div className="form-group">
@@ -420,27 +462,58 @@ function LocationFields({
           id={`${mode}-label`}
           value={location.label}
           onChange={(event) => onChange(mode, "label", event.target.value)}
+          onFocus={onFocus}
           required
         />
+      </div>
+    </div>
+  );
+}
+
+function CoordinateFields({
+  mode,
+  title,
+  location,
+  onChange,
+}: {
+  mode: SelectionMode;
+  title: string;
+  location: LocationInput;
+  onChange: (
+    mode: SelectionMode,
+    field: keyof LocationInput,
+    value: string,
+  ) => void;
+}) {
+  return (
+    <fieldset>
+      <legend>{title}</legend>
+      <label>
+        <span>Latitude</span>
         <input
           className="form-control"
           aria-label={`${title} latitude`}
           type="number"
+          inputMode="decimal"
           step="any"
           value={location.latitude}
           onChange={(event) => onChange(mode, "latitude", event.target.value)}
           required
         />
+      </label>
+      <label>
+        <span>Longitude</span>
         <input
           className="form-control"
           aria-label={`${title} longitude`}
           type="number"
+          inputMode="decimal"
           step="any"
           value={location.longitude}
           onChange={(event) => onChange(mode, "longitude", event.target.value)}
           required
         />
-      </div>
-    </div>
+      </label>
+    </fieldset>
   );
 }

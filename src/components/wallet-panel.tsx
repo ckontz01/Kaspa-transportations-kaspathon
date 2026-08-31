@@ -1,6 +1,7 @@
 "use client";
 
-import { Gem } from "lucide-react";
+import { Gem, ShieldCheck } from "lucide-react";
+import { KasKeeperInstallCard } from "@/components/kaskeeper-install-card";
 import { useOsrh } from "@/components/osrh-provider";
 
 function shortAddress(value: string) {
@@ -10,6 +11,18 @@ function shortAddress(value: string) {
 export function WalletPanel({ compact = false }: { compact?: boolean }) {
   const { state, connect, disconnect, rediscover } = useOsrh();
   const connected = Boolean(state.active && state.user?.address);
+  const hasKasKeeper = state.providers.some(
+    (provider) =>
+      provider.info.rdns === "com.kaskeeper" ||
+      provider.info.name.toLowerCase() === "kaskeeper",
+  );
+  const status = state.canSignCovenants
+    ? { label: "Escrow ready", className: "badge-success" }
+    : connected
+      ? { label: "Account linked", className: "badge-info" }
+      : state.user?.address
+        ? { label: "Reconnect to sign", className: "badge-warning" }
+        : { label: "Not linked", className: "" };
 
   return (
     <section
@@ -24,13 +37,10 @@ export function WalletPanel({ compact = false }: { compact?: boolean }) {
           <p>KIP-5 proves ownership; KIP-12 signs covenant transactions.</p>
         </div>
         <span
-          className={`badge ${connected ? "badge-success" : "badge-warning"}`}
+          className={`badge ${status.className}`.trim()}
+          aria-live="polite"
         >
-          {connected
-            ? "Ready to sign"
-            : state.user?.address
-              ? "Reconnect to sign"
-              : "Not linked"}
+          {status.label}
         </span>
       </div>
 
@@ -51,19 +61,28 @@ export function WalletPanel({ compact = false }: { compact?: boolean }) {
           state.providers.map((provider) => {
             const id = provider.info.rdns ?? provider.info.uuid;
             const selected = state.active === provider;
+            const canSign = Boolean(provider.provider.signPskt);
             return (
               <button
                 type="button"
-                className={`btn ${selected ? "btn-outline" : "btn-primary"}`}
+                className={`btn ${selected ? "btn-outline" : "btn-primary"} wallet-provider-button`}
                 key={id}
                 disabled={state.phase === "connecting"}
                 onClick={() =>
                   void (selected ? disconnect() : connect(provider))
                 }
               >
-                {selected
-                  ? `Disconnect ${provider.info.name}`
-                  : `Connect ${provider.info.name}`}
+                <span>
+                  <strong>
+                    {selected ? "Disconnect" : "Connect"} {provider.info.name}
+                  </strong>
+                  <small>
+                    {canSign
+                      ? "Account verification + covenant signing"
+                      : "Account verification · sign escrow later"}
+                  </small>
+                </span>
+                {canSign ? <ShieldCheck aria-hidden="true" size={18} /> : null}
               </button>
             );
           })
@@ -99,6 +118,7 @@ export function WalletPanel({ compact = false }: { compact?: boolean }) {
             </div>
           </div>
         )}
+        {!hasKasKeeper ? <KasKeeperInstallCard compact={compact} /> : null}
       </div>
     </section>
   );

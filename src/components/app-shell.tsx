@@ -3,7 +3,12 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent as ReactKeyboardEvent,
+} from "react";
 import {
   Activity,
   Bot,
@@ -81,6 +86,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const moreTriggerRef = useRef<HTMLButtonElement>(null);
+  const moreDialogRef = useRef<HTMLElement>(null);
+  const moreWasOpen = useRef(false);
   const user = state.user;
   const links = user
     ? user.role === "driver"
@@ -100,6 +108,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         ? "Driver workspace"
         : "Passenger"
     : null;
+  const currentPageLabel =
+    links.find((item) => isActive(item.href))?.label ?? "Account";
 
   const mobilePrimary = user
     ? links.filter((item) => {
@@ -133,18 +143,49 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   };
 
   useEffect(() => {
-    if (!moreOpen) return;
+    if (!moreOpen) {
+      if (moreWasOpen.current) {
+        moreWasOpen.current = false;
+        moreTriggerRef.current?.focus({ preventScroll: true });
+      }
+      return;
+    }
+    moreWasOpen.current = true;
     const previousOverflow = document.body.style.overflow;
     const closeOnEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape") setMoreOpen(false);
     };
     document.body.style.overflow = "hidden";
+    requestAnimationFrame(() => {
+      moreDialogRef.current
+        ?.querySelector<HTMLElement>("button:not([disabled])")
+        ?.focus();
+    });
     window.addEventListener("keydown", closeOnEscape);
     return () => {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", closeOnEscape);
     };
   }, [moreOpen]);
+
+  const trapMoreFocus = (event: ReactKeyboardEvent<HTMLElement>) => {
+    if (event.key !== "Tab") return;
+    const focusable = Array.from(
+      moreDialogRef.current?.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])',
+      ) ?? [],
+    );
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  };
 
   const brand = (
     <Link
@@ -220,13 +261,22 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
           </aside>
           <header className="mobile-app-header">
-            {brand}
+            <div className="mobile-header-identity">
+              {brand}
+              <span className="mobile-route-context">
+                <small>{roleLabel}</small>
+                <strong>{currentPageLabel}</strong>
+              </span>
+            </div>
             <Link
               href="/profile"
-              className="account-avatar"
+              className={`mobile-account-link${state.canSignCovenants ? " wallet-ready" : ""}`}
               aria-label="Account"
             >
-              {(user.fullName || user.displayName || "A").charAt(0)}
+              <span className="account-avatar">
+                {(user.fullName || user.displayName || "A").charAt(0)}
+              </span>
+              <span className="mobile-wallet-dot" aria-hidden="true" />
             </Link>
           </header>
         </>
@@ -291,6 +341,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               </Link>
             ))}
             <button
+              ref={moreTriggerRef}
               type="button"
               className={moreOpen ? "is-active" : undefined}
               aria-haspopup="dialog"
@@ -309,27 +360,52 @@ export function AppShell({ children }: { children: React.ReactNode }) {
               }}
             >
               <section
+                ref={moreDialogRef}
                 className="mobile-more-sheet"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="mobile-menu-title"
+                onKeyDown={trapMoreFocus}
               >
                 <div className="mobile-sheet-handle" />
                 <div className="mobile-sheet-heading">
                   <div>
                     <span className="eyebrow">{roleLabel}</span>
-                    <h2 id="mobile-menu-title">Everything else</h2>
+                    <h2 id="mobile-menu-title">Menu</h2>
                   </div>
                   <button
                     type="button"
                     className="icon-button"
                     aria-label="Close menu"
-                    autoFocus
                     onClick={() => setMoreOpen(false)}
                   >
                     <X aria-hidden="true" size={20} />
                   </button>
                 </div>
+                <Link
+                  href="/profile"
+                  className="mobile-profile-summary"
+                  onClick={() => setMoreOpen(false)}
+                >
+                  <span className="account-avatar" aria-hidden="true">
+                    {(user.fullName || user.displayName || "A").charAt(0)}
+                  </span>
+                  <span>
+                    <strong>
+                      {user.fullName || user.displayName || "Account"}
+                    </strong>
+                    <small>
+                      {state.canSignCovenants
+                        ? "Escrow wallet ready"
+                        : state.active
+                          ? "Wallet linked · sign escrow later"
+                          : state.user?.address
+                            ? "Reconnect wallet to sign"
+                            : "No wallet linked"}
+                    </small>
+                  </span>
+                  <ChevronRight aria-hidden="true" size={18} />
+                </Link>
                 <nav
                   className="mobile-more-links"
                   aria-label="All destinations"

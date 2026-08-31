@@ -8,6 +8,7 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
 } from "react";
 import type { KaspaProviderDetail } from "kaspa-wallet-standard";
+import { KasKeeperInstallCard } from "@/components/kaskeeper-install-card";
 import type { WalletState } from "@/lib/types";
 
 type Props = {
@@ -22,6 +23,11 @@ export function WalletControl({ state, connect, disconnect }: Props) {
   const triggerRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLElement>(null);
   const wasOpen = useRef(false);
+  const hasKasKeeper = state.providers.some(
+    (provider) =>
+      provider.info.rdns === "com.kaskeeper" ||
+      provider.info.name.toLowerCase() === "kaskeeper",
+  );
 
   useEffect(() => {
     if (open) {
@@ -62,7 +68,7 @@ export function WalletControl({ state, connect, disconnect }: Props) {
     }
   };
 
-  if (state.user?.address) {
+  if (state.active && state.user?.address) {
     const short = `${state.user.address.slice(0, 13)}…${state.user.address.slice(-6)}`;
     return (
       <div className="wallet-session">
@@ -90,7 +96,11 @@ export function WalletControl({ state, connect, disconnect }: Props) {
         data-state={state.phase === "connecting" ? "loading" : "default"}
       >
         <Wallet aria-hidden="true" size={17} strokeWidth={1.8} />
-        {state.phase === "discovering" ? "Finding wallets" : "Connect wallet"}
+        {state.phase === "discovering"
+          ? "Finding wallets"
+          : state.user?.address
+            ? "Reconnect wallet"
+            : "Connect wallet"}
       </button>
       {open ? (
         <div
@@ -166,8 +176,8 @@ export function WalletControl({ state, connect, disconnect }: Props) {
                         <strong>{detail.info.name}</strong>
                         <small>
                           {detail.provider.signPskt
-                            ? "Covenant signing available"
-                            : "No signPskt support"}
+                            ? "Account verification + covenant signing"
+                            : "Account verification · sign escrow later"}
                         </small>
                       </span>
                       <em>{loading ? "Check wallet" : "Select"}</em>
@@ -184,6 +194,7 @@ export function WalletControl({ state, connect, disconnect }: Props) {
                   </small>
                 </div>
               )}
+              {!hasKasKeeper ? <KasKeeperInstallCard compact /> : null}
             </div>
             {state.error ? <p className="inline-error">{state.error}</p> : null}
             <p className="trust-note">

@@ -121,11 +121,6 @@ export function useKaspaWallet() {
             "This wallet cannot provide KIP-5 authentication capabilities.",
           );
         }
-        if (!provider.signPskt) {
-          throw new Error(
-            "This wallet does not expose KIP-12 signPskt for covenant transactions.",
-          );
-        }
         const accounts = await provider.requestAccounts();
         if (!accounts[0]) throw new Error("The wallet returned no account.");
         let walletNetwork = normalizeKaspaNetworkId(
@@ -214,7 +209,7 @@ export function useKaspaWallet() {
       const provider = active?.provider;
       if (!provider?.signPskt) {
         throw new Error(
-          "Select a KIP-12 wallet again before signing this transaction.",
+          "This connected wallet can authenticate your account but does not expose KIP-12 signPskt. Reconnect with a covenant-capable wallet before signing.",
         );
       }
       const signed = await provider.signPskt({

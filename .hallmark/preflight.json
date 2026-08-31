@@ -17,22 +17,22 @@
     "Hum token system",
     "desktop N3 side rail and mobile bottom navigation with complete More sheet",
     "map-first normal-ride booking canvas with progressive disclosure",
+    "phone-safe route sheet, fare action, and wallet acquisition flow",
     "role-aware dashboard hierarchy and responsive common ride-hailing patterns"
   ],
   "preview": {
-    "preEmitCritique": "P5 H5 E4 S5 R5 V5",
-    "slopTest": "pass (58/58 gates; desktop rendered, narrow widths statically audited because isolated viewport rendering was blocked by browser policy)",
+    "preEmitCritique": "P5 H5 E5 S5 R5 V4",
+    "slopTest": "pass (58/58 gates; desktop plus 320/375/414/768 responsive states rendered and exercised)",
     "contrast": "pass (WCAG 2.1 ratios: body pairs >= 4.5:1; focus and icon pairs >= 3:1)",
     "viewports": [
-      "320x800",
-      "375x800",
+      "320x700",
+      "375x812",
       "414x896",
       "768x1024",
-      "1280x800",
-      "1920x1080"
+      "1440x900"
     ],
     "horizontalOverflow": false,
     "wrappedClickableLabels": false,
-    "viewportVerification": "1280-class desktop rendered in-app; 320/375/414/768 media-query and layout-safety checks completed statically"
+    "viewportVerification": "Rendered in-app at 320/375/414/768 and 1440; zero horizontal overflow, 44px app-owned targets, 16px form controls, clear fixed-nav and sticky-fare geometry"
   }
 }
