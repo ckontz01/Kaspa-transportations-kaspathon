@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/index.py": {
+      "maxDuration": 30,
+      "excludeFiles": "{.*/**,.env*,.resolver.*,*.md,*.ts,*.tsx,build/**,contracts/**,Database/**,docs/**,node_modules/**,OSRH_KASPA_PHP/**,public/**,scripts/**,src/**,test-results/**,tests/**}"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "/api/index"
+    }
+  ]
+}

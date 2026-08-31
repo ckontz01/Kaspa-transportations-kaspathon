@@ -1,0 +1,278 @@
+pragma silverscript ^0.1.0;
+
+// One escrow UTXO is created per normal ride. All ride-specific values live in
+// covenant state so the backend can instantiate one audited template without
+// compiling a different contract template for every booking.
+contract RideEscrow(
+    byte[32] initial_passenger_key_hash,
+    byte[32] initial_resolver_key_hash,
+    byte[32] initial_ride_commitment,
+    int initial_refund_after_daa,
+    int initial_quoted_fare_sompi,
+    byte[32] initial_driver_key_hash,
+    int initial_phase
+) {
+    byte[32] passenger_key_hash = initial_passenger_key_hash;
+    byte[32] resolver_key_hash = initial_resolver_key_hash;
+    byte[32] ride_commitment = initial_ride_commitment;
+    int refund_after_daa = initial_refund_after_daa;
+    int quoted_fare_sompi = initial_quoted_fare_sompi;
+    byte[32] driver_key_hash = initial_driver_key_hash;
+    int phase = initial_phase;
+
+    function require_ride(byte[32] supplied_ride) {
+        require(supplied_ride == ride_commitment);
+    }
+
+    function require_key(pubkey supplied_key, byte[32] expected_key_hash) {
+        require(blake2b(byte[](supplied_key)) == expected_key_hash);
+    }
+
+    // Authorization is supplied by an ordinary P2PK input in the same
+    // transaction. Consensus validates that input's signature; this covenant
+    // binds the input to the expected participant key. It is compatible with
+    // KIP-12 partial transaction signing and keeps private keys out of the app.
+    function require_authorized_input(
+        int active_input_index,
+        int input_index,
+        pubkey signer
+    ) {
+        require(input_index >= 0);
+        require(input_index < tx.inputs.length);
+        require(input_index != active_input_index);
+        require(
+            tx.inputs[input_index].scriptPubKey ==
+            byte[](new ScriptPubKeyP2PK(signer))
+        );
+    }
+
+    function require_single_covenant_input(int active_input_index) {
+        byte[32] covenant_id = OpInputCovenantId(active_input_index);
+        require(OpCovInputCount(covenant_id) == 1);
+    }
+
+    // A terminal spend must not authorize a successor in this covenant family.
+    function require_terminal_spend(int active_input_index) {
+        require_single_covenant_input(active_input_index);
+        require(OpAuthOutputCount(active_input_index) == 0);
+        require(
+            tx.inputs[active_input_index].value == quoted_fare_sompi
+        );
+    }
+
+    // The complete escrow value is pinned to the beneficiary. Miner fees and
+    // optional tips must be funded by ordinary inputs, so escrow value cannot
+    // be shaved into a hidden output.
+    function require_payout(int output_index, pubkey beneficiary) {
+        require(output_index >= 0);
+        require(output_index < tx.outputs.length);
+        require(
+            tx.outputs[output_index].scriptPubKey ==
+            byte[](new ScriptPubKeyP2PK(beneficiary))
+        );
+        require(tx.outputs[output_index].value == quoted_fare_sompi);
+    }
+
+    // Dispatch acceptance is a 1:1 state transition. The passenger approves
+    // the selected driver and both parties sign ordinary P2PK inputs. This
+    // prevents front-running without giving the backend a routine hot-key role.
+    entry accept(
+        byte[32] supplied_ride,
+        pubkey passenger,
+        int passenger_input_index,
+        pubkey selected_driver,
+        int driver_input_index
+    ) {
+        require(phase == 0);
+        require(refund_after_daa > 0);
+        require(quoted_fare_sompi > 0);
+        require_ride(supplied_ride);
+        require_key(passenger, passenger_key_hash);
+        require(resolver_key_hash != passenger_key_hash);
+        require(blake2b(byte[](selected_driver)) != passenger_key_hash);
+        require(blake2b(byte[](selected_driver)) != resolver_key_hash);
+        require(passenger_input_index != driver_input_index);
+        require_authorized_input(
+            this.activeInputIndex,
+            passenger_input_index,
+            passenger
+        );
+        require_authorized_input(
+            this.activeInputIndex,
+            driver_input_index,
+            selected_driver
+        );
+        require_single_covenant_input(this.activeInputIndex);
+        require(OpAuthOutputCount(this.activeInputIndex) == 1);
+
+        int next_output_index = OpAuthOutputIdx(this.activeInputIndex, 0);
+        require(
+            tx.inputs[this.activeInputIndex].value == quoted_fare_sompi
+        );
+        require(
+            tx.outputs[next_output_index].value == quoted_fare_sompi
+        );
+
+        validateOutputState(next_output_index, State {
+            passenger_key_hash: passenger_key_hash,
+            resolver_key_hash: resolver_key_hash,
+            ride_commitment: ride_commitment,
+            refund_after_daa: refund_after_daa,
+            quoted_fare_sompi: quoted_fare_sompi,
+            driver_key_hash: blake2b(byte[](selected_driver)),
+            phase: 1
+        });
+    }
+
+    // Before assignment, the passenger can cancel without platform approval.
+    entry cancel_unaccepted(
+        byte[32] supplied_ride,
+        pubkey passenger,
+        int passenger_input_index,
+        int refund_output_index
+    ) {
+        require(phase == 0);
+        require_ride(supplied_ride);
+        require_key(passenger, passenger_key_hash);
+        require_authorized_input(
+            this.activeInputIndex,
+            passenger_input_index,
+            passenger
+        );
+        require_terminal_spend(this.activeInputIndex);
+        require_payout(refund_output_index, passenger);
+    }
+
+    // Normal completion: passenger and assigned driver cooperatively release
+    // the fixed upfront fare to the driver.
+    entry settle(
+        byte[32] supplied_ride,
+        pubkey passenger,
+        int passenger_input_index,
+        pubkey selected_driver,
+        int driver_input_index,
+        int payout_output_index
+    ) {
+        require(phase == 1);
+        require_ride(supplied_ride);
+        require_key(passenger, passenger_key_hash);
+        require_key(selected_driver, driver_key_hash);
+        require(passenger_input_index != driver_input_index);
+        require_authorized_input(
+            this.activeInputIndex,
+            passenger_input_index,
+            passenger
+        );
+        require_authorized_input(
+            this.activeInputIndex,
+            driver_input_index,
+            selected_driver
+        );
+        require_terminal_spend(this.activeInputIndex);
+        require_payout(payout_output_index, selected_driver);
+    }
+
+    // Cooperative cancellation after assignment returns the full fare.
+    entry cancel_accepted(
+        byte[32] supplied_ride,
+        pubkey passenger,
+        int passenger_input_index,
+        pubkey selected_driver,
+        int driver_input_index,
+        int refund_output_index
+    ) {
+        require(phase == 1);
+        require_ride(supplied_ride);
+        require_key(passenger, passenger_key_hash);
+        require_key(selected_driver, driver_key_hash);
+        require(passenger_input_index != driver_input_index);
+        require_authorized_input(
+            this.activeInputIndex,
+            passenger_input_index,
+            passenger
+        );
+        require_authorized_input(
+            this.activeInputIndex,
+            driver_input_index,
+            selected_driver
+        );
+        require_terminal_spend(this.activeInputIndex);
+        require_payout(refund_output_index, passenger);
+    }
+
+    // Dispute paths need the beneficiary and resolver. The resolver cannot
+    // redirect funds or spend alone.
+    entry resolve_driver(
+        byte[32] supplied_ride,
+        pubkey selected_driver,
+        int driver_input_index,
+        pubkey resolver,
+        int resolver_input_index,
+        int payout_output_index
+    ) {
+        require(phase == 1);
+        require_ride(supplied_ride);
+        require_key(selected_driver, driver_key_hash);
+        require_key(resolver, resolver_key_hash);
+        require(driver_input_index != resolver_input_index);
+        require_authorized_input(
+            this.activeInputIndex,
+            driver_input_index,
+            selected_driver
+        );
+        require_authorized_input(
+            this.activeInputIndex,
+            resolver_input_index,
+            resolver
+        );
+        require_terminal_spend(this.activeInputIndex);
+        require_payout(payout_output_index, selected_driver);
+    }
+
+    entry resolve_passenger(
+        byte[32] supplied_ride,
+        pubkey passenger,
+        int passenger_input_index,
+        pubkey resolver,
+        int resolver_input_index,
+        int refund_output_index
+    ) {
+        require(phase == 1);
+        require_ride(supplied_ride);
+        require_key(passenger, passenger_key_hash);
+        require_key(resolver, resolver_key_hash);
+        require(passenger_input_index != resolver_input_index);
+        require_authorized_input(
+            this.activeInputIndex,
+            passenger_input_index,
+            passenger
+        );
+        require_authorized_input(
+            this.activeInputIndex,
+            resolver_input_index,
+            resolver
+        );
+        require_terminal_spend(this.activeInputIndex);
+        require_payout(refund_output_index, passenger);
+    }
+
+    // Liveness escape hatch: after the relative DAA timeout, the passenger can
+    // recover without either the driver or resolver.
+    entry timeout_refund(
+        byte[32] supplied_ride,
+        pubkey passenger,
+        int passenger_input_index,
+        int refund_output_index
+    ) {
+        require(this.ageDaa >= refund_after_daa);
+        require_ride(supplied_ride);
+        require_key(passenger, passenger_key_hash);
+        require_authorized_input(
+            this.activeInputIndex,
+            passenger_input_index,
+            passenger
+        );
+        require_terminal_spend(this.activeInputIndex);
+        require_payout(refund_output_index, passenger);
+    }
+}

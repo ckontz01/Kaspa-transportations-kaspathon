@@ -1,0 +1,37 @@
+{
+  "date": "2026-08-31",
+  "sources": {
+    "font": "Legacy Segoe UI/system stack in OSRH_KASPA_PHP css",
+    "palette": "Near-black slate with Kaspa cyan and blue/green status accents",
+    "motion": "CSS transitions only; no motion library",
+    "spacing": "No consistent scale",
+    "framework": "Legacy PHP templates; replacement is Next.js App Router"
+  },
+  "preserve": [
+    "technical Kaspa payment visibility",
+    "dark protocol surface",
+    "direct status language"
+  ],
+  "introduce": [
+    "Workbench macrostructure",
+    "Cobalt token system",
+    "4pt spacing scale",
+    "full interaction states",
+    "command palette"
+  ],
+  "preview": {
+    "preEmitCritique": "P5 H5 E5 S5 R4 V5",
+    "slopTest": "pass (58/58 gates)",
+    "contrast": "pass (WCAG 2.1 checks for declared text/surface pairs)",
+    "viewports": [
+      "320x800",
+      "375x800",
+      "414x896",
+      "768x1024",
+      "1280x800",
+      "1920x1080"
+    ],
+    "horizontalOverflow": false,
+    "wrappedClickableLabels": false
+  }
+}

@@ -1,0 +1,57 @@
+{
+  "format": "kaspa-transportations-legacy-normal-rides-v1",
+  "exportedAt": "2026-08-31T00:00:00+00:00",
+  "source": {"engine": "mssql", "database": "OSRH_DB"},
+  "users": [
+    {
+      "userId": 7,
+      "email": "passenger@example.test",
+      "phone": null,
+      "fullName": "Legacy Passenger",
+      "status": "active",
+      "passengerId": 3,
+      "driverId": null,
+      "wallets": [
+        {
+          "walletId": 11,
+          "address": "kaspatest:qqexample",
+          "addressPrefix": "kaspatest",
+          "isVerified": true,
+          "isActive": true
+        }
+      ]
+    },
+    {
+      "userId": 8,
+      "email": "driver@example.test",
+      "phone": null,
+      "fullName": "Legacy Driver",
+      "status": "active",
+      "passengerId": null,
+      "driverId": 4,
+      "driverType": "partner",
+      "wallets": []
+    }
+  ],
+  "rides": [
+    {
+      "rideRequestId": 19,
+      "passengerUserId": 7,
+      "requestedAt": "2026-01-10T10:00:00",
+      "status": "completed",
+      "pickup": {"label": "A", "latitude": 35.1, "longitude": 33.3},
+      "dropoff": {"label": "B", "latitude": 35.2, "longitude": 33.4},
+      "trips": [{"tripId": 23, "driverUserId": 8, "status": "completed"}]
+    }
+  ],
+  "payments": [
+    {
+      "paymentId": 29,
+      "tripId": 23,
+      "amount": 4.75,
+      "currencyCode": "EUR",
+      "status": "completed",
+      "kaspaTransactions": []
+    }
+  ]
+}

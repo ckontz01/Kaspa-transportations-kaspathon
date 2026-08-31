@@ -1,0 +1,10 @@
+{
+  "repository": "https://github.com/kaspanet/silverscript.git",
+  "revision": "c7d17a15ac88610d013ec9ffffa9520aeb69929b",
+  "compiler": "silverc",
+  "compiler_version": "0.1.0",
+  "pragma": "^0.1.0",
+  "source_sha256": "c43f5c46b5c3419933cff561792f78f71d2421429ab08928d95f38d7b9bec501",
+  "artifact_sha256": "c9b979e0d15762715a40b8026915aa71da88a911274b607a312e5ed15debbcdc",
+  "template_hash": "8aa2a011dcb03332d2b42e3d201d54c6586a5d41f62b70e622772581dca4f3fe"
+}
