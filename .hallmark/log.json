@@ -1,6 +1,15 @@
 [
   {
     "date": "2026-08-31",
+    "macrostructure": "Map / Diagram",
+    "theme": "Hum",
+    "enrichment": "E5 route-map artifact plus live Leaflet booking map",
+    "nav": "N3",
+    "footer": "Ft5",
+    "brief": "Complete common ride-hailing UX revamp preserving every existing mobility and protocol feature"
+  },
+  {
+    "date": "2026-08-31",
     "macrostructure": "Workbench",
     "theme": "Cobalt",
     "enrichment": "none",

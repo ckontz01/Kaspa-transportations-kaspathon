@@ -2,6 +2,15 @@
 
 import { useRouter } from "next/navigation";
 import { FormEvent, useCallback, useState } from "react";
+import {
+  Check,
+  Clock3,
+  MapPin,
+  Navigation,
+  ShieldCheck,
+  SlidersHorizontal,
+  WalletCards,
+} from "lucide-react";
 import { useOsrh } from "@/components/osrh-provider";
 import { ProtectedPage } from "@/components/protected-page";
 import { RideMap } from "@/components/ride-map";
@@ -125,44 +134,46 @@ export function PassengerRequestPage() {
 
   return (
     <ProtectedPage role="passenger">
-      <div className="page-header">
-        <div>
-          <h1>Request a Driver Ride</h1>
-          <p>
-            Select pickup and destination points, review the route, then approve
-            the Kaspa covenant.
-          </p>
+      <div className="booking-page">
+        <div className="booking-heading">
+          <div>
+            <p className="eyebrow">Normal driver ride</p>
+            <h1>Where are you going?</h1>
+            <p>Set the route, review your options, then authorize the fare.</p>
+          </div>
+          <span className="badge badge-info">
+            <ShieldCheck aria-hidden="true" size={15} />
+            Covenant protected
+          </span>
         </div>
-        <span className="badge badge-info">Normal ride</span>
-      </div>
 
-      <div className="ride-request-layout">
-        <div className="stack">
-          <section className="card">
-            <div className="card-header">
-              <div>
-                <h2 className="card-title">Choose your route</h2>
-                <p className="form-help">
-                  Click the map after choosing which point to place.
-                </p>
+        <div className="booking-canvas">
+          <section className="booking-map-card">
+            <div className="booking-map-toolbar">
+              <div className="point-selector" aria-label="Choose map point">
+                <button
+                  type="button"
+                  className={`btn btn-outline btn-small${selectionMode === "pickup" ? " active" : ""}`}
+                  aria-pressed={selectionMode === "pickup"}
+                  onClick={() => setSelectionMode("pickup")}
+                >
+                  <span className="stop-dot pickup" aria-hidden="true" />
+                  Set pickup
+                </button>
+                <button
+                  type="button"
+                  className={`btn btn-outline btn-small${selectionMode === "dropoff" ? " active" : ""}`}
+                  aria-pressed={selectionMode === "dropoff"}
+                  onClick={() => setSelectionMode("dropoff")}
+                >
+                  <MapPin aria-hidden="true" size={15} />
+                  Set destination
+                </button>
               </div>
-              <span className="map-mode">📍 Selecting {selectionMode}</span>
-            </div>
-            <div className="point-selector">
-              <button
-                type="button"
-                className={`btn btn-outline btn-small${selectionMode === "pickup" ? " active" : ""}`}
-                onClick={() => setSelectionMode("pickup")}
-              >
-                Set pickup
-              </button>
-              <button
-                type="button"
-                className={`btn btn-outline btn-small${selectionMode === "dropoff" ? " active" : ""}`}
-                onClick={() => setSelectionMode("dropoff")}
-              >
-                Set destination
-              </button>
+              <span className="map-mode">
+                <Navigation aria-hidden="true" size={15} />
+                Selecting {selectionMode}
+              </span>
             </div>
             <RideMap
               pickup={pickup}
@@ -172,189 +183,209 @@ export function PassengerRequestPage() {
               onRoute={updateRoute}
             />
             {route ? (
-              <div className="route-summary">
+              <div className="booking-route-summary" aria-live="polite">
                 <div>
-                  <small>Road distance</small>
-                  <strong>{formatDistance(route.distanceMeters)}</strong>
+                  <Navigation aria-hidden="true" size={17} />
+                  <span>
+                    <small>Road distance</small>
+                    <strong>{formatDistance(route.distanceMeters)}</strong>
+                  </span>
                 </div>
                 <div>
-                  <small>Estimated drive</small>
-                  <strong>{formatDuration(route.durationSeconds)}</strong>
-                </div>
-                <div>
-                  <small>Network</small>
-                  <strong>Kaspa testnet-10</strong>
+                  <Clock3 aria-hidden="true" size={17} />
+                  <span>
+                    <small>Estimated drive</small>
+                    <strong>{formatDuration(route.durationSeconds)}</strong>
+                  </span>
                 </div>
               </div>
             ) : null}
           </section>
 
-          <form className="card" onSubmit={requestQuote}>
-            <div className="card-header">
+          <form className="card booking-sheet" onSubmit={requestQuote}>
+            <div className="booking-sheet-handle" />
+            <div className="booking-sheet-heading">
               <div>
-                <h2 className="card-title">Ride details</h2>
-                <p className="form-help">
-                  The same normal ride options from OSRH.
-                </p>
+                <span className="booking-step">1</span>
+                <div>
+                  <h2>Your route</h2>
+                  <p>Tap the map or edit the locations.</p>
+                </div>
               </div>
+              <span className="network-chip">testnet-10</span>
             </div>
-            <LocationFields
-              mode="pickup"
-              title="Pickup"
-              location={pickup}
-              onChange={updateField}
-            />
-            <LocationFields
-              mode="dropoff"
-              title="Destination"
-              location={dropoff}
-              onChange={updateField}
-            />
-            <div className="form-grid">
-              <div className="form-group">
-                <label className="form-label" htmlFor="serviceType">
-                  Service type
-                </label>
-                <select
-                  className="form-control"
-                  id="serviceType"
-                  name="serviceType"
-                  defaultValue="standard"
-                  onChange={() => setQuote(null)}
-                >
-                  <option value="standard">Standard</option>
-                  <option value="comfort">Comfort</option>
-                  <option value="accessible">Accessible</option>
-                  <option value="cargo">Cargo / large luggage</option>
-                </select>
-              </div>
-              <div className="form-group">
-                <label className="form-label" htmlFor="luggageVolume">
-                  Luggage volume (m³)
-                </label>
-                <input
-                  className="form-control"
-                  id="luggageVolume"
-                  name="luggageVolume"
-                  type="number"
-                  min="0"
-                  max="20"
-                  step="0.1"
-                  placeholder="0.5"
-                  onChange={() => setQuote(null)}
-                />
-              </div>
-            </div>
-            <div className="form-group">
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  name="wheelchairNeeded"
-                  onChange={() => setQuote(null)}
-                />
-                <span>Wheelchair-accessible vehicle required</span>
-              </label>
-            </div>
-            <div className="form-group">
-              <label className="checkbox-label">
-                <input
-                  type="checkbox"
-                  name="useSimulation"
-                  onChange={() => setQuote(null)}
-                />
-                <span>Use simulated driver movement for this test ride</span>
-              </label>
-            </div>
-            <div className="form-group">
-              <label className="form-label" htmlFor="passengerNotes">
-                Notes for the driver
-              </label>
-              <textarea
-                className="form-control"
-                id="passengerNotes"
-                name="passengerNotes"
-                maxLength={500}
-                placeholder="Pickup landmark, luggage, or accessibility notes"
-                onChange={() => setQuote(null)}
+            <div className="booking-locations">
+              <LocationFields
+                mode="pickup"
+                title="Pickup"
+                location={pickup}
+                onChange={updateField}
+              />
+              <LocationFields
+                mode="dropoff"
+                title="Destination"
+                location={dropoff}
+                onChange={updateField}
               />
             </div>
+
+            <div className="form-group booking-service-field">
+              <label className="form-label" htmlFor="serviceType">
+                Ride type
+              </label>
+              <select
+                className="form-control"
+                id="serviceType"
+                name="serviceType"
+                defaultValue="standard"
+                onChange={() => setQuote(null)}
+              >
+                <option value="standard">Standard · everyday ride</option>
+                <option value="comfort">Comfort · extra room</option>
+                <option value="accessible">Accessible vehicle</option>
+                <option value="cargo">Cargo · large luggage</option>
+              </select>
+            </div>
+
+            <details className="booking-options">
+              <summary>
+                <span>
+                  <SlidersHorizontal aria-hidden="true" size={18} />
+                  Ride preferences
+                </span>
+                <small>Accessibility, luggage, notes</small>
+              </summary>
+              <div className="booking-options-body">
+                <div className="form-group">
+                  <label className="form-label" htmlFor="luggageVolume">
+                    Luggage volume (m³)
+                  </label>
+                  <input
+                    className="form-control"
+                    id="luggageVolume"
+                    name="luggageVolume"
+                    type="number"
+                    min="0"
+                    max="20"
+                    step="0.1"
+                    placeholder="0.5"
+                    onChange={() => setQuote(null)}
+                  />
+                </div>
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="wheelchairNeeded"
+                    onChange={() => setQuote(null)}
+                  />
+                  <span>Wheelchair-accessible vehicle required</span>
+                </label>
+                <label className="checkbox-label">
+                  <input
+                    type="checkbox"
+                    name="useSimulation"
+                    onChange={() => setQuote(null)}
+                  />
+                  <span>Use simulated driver movement for this test ride</span>
+                </label>
+                <div className="form-group">
+                  <label className="form-label" htmlFor="passengerNotes">
+                    Notes for the driver
+                  </label>
+                  <textarea
+                    className="form-control"
+                    id="passengerNotes"
+                    name="passengerNotes"
+                    maxLength={500}
+                    placeholder="Pickup landmark, luggage, or accessibility notes"
+                    onChange={() => setQuote(null)}
+                  />
+                </div>
+              </div>
+            </details>
+
             {error ? <div className="inline-error">{error}</div> : null}
             <button
               type="submit"
-              className="btn btn-primary btn-block"
+              className="btn btn-primary btn-block booking-primary-action"
               disabled={loading !== null}
             >
-              {loading === "quote" ? "Calculating fare…" : "Calculate fare"}
+              {loading === "quote" ? "Calculating fare…" : "See fare"}
             </button>
-          </form>
 
-          {quote ? (
-            <section className="card" aria-live="polite">
-              <div className="card-header">
-                <div>
-                  <h2 className="card-title">Fare quote</h2>
-                  <p className="form-help">
+            {quote ? (
+              <section className="booking-quote" aria-live="polite">
+                <div className="booking-quote-heading">
+                  <div>
+                    <span className="booking-step">2</span>
+                    <span>
+                      <small>Your fare</small>
+                      <strong>{quote.quotedFareKas} KAS</strong>
+                    </span>
+                  </div>
+                  <small>
                     Valid until {new Date(quote.expiresAt).toLocaleTimeString()}
-                    .
-                  </p>
+                  </small>
                 </div>
-                <span className="badge badge-success">
-                  {quote.quotedFareKas} KAS
-                </span>
-              </div>
-              <dl className="detail-list">
-                <div>
-                  <dt>Distance</dt>
-                  <dd>{formatDistance(quote.routeDistanceMeters)}</dd>
+                <dl className="booking-quote-details">
+                  <div>
+                    <dt>Distance</dt>
+                    <dd>{formatDistance(quote.routeDistanceMeters)}</dd>
+                  </div>
+                  <div>
+                    <dt>Drive time</dt>
+                    <dd>{formatDuration(quote.estimatedDurationSeconds)}</dd>
+                  </div>
+                </dl>
+                <div className="quote-protection">
+                  <WalletCards aria-hidden="true" size={18} />
+                  <span>
+                    <strong>SilverScript ride escrow</strong>
+                    Driver payout needs settlement authorization; cancellation
+                    and timeout refunds follow covenant rules.
+                  </span>
                 </div>
-                <div>
-                  <dt>Duration</dt>
-                  <dd>{formatDuration(quote.estimatedDurationSeconds)}</dd>
-                </div>
-                <div>
-                  <dt>Payment</dt>
-                  <dd>SilverScript ride escrow</dd>
-                </div>
-                <div>
-                  <dt>Driver receives</dt>
-                  <dd>Only after both parties sign settlement</dd>
-                </div>
-                <div>
-                  <dt>Refund path</dt>
-                  <dd>Covenant cancellation / timeout rule</dd>
-                </div>
-              </dl>
-              <button
-                type="button"
-                className="btn btn-primary btn-block"
-                onClick={() => void confirmRide()}
-                disabled={loading !== null}
-              >
-                {loading === "book"
-                  ? "Preparing covenant…"
-                  : state.canSignCovenants
-                    ? "Confirm ride & sign escrow"
-                    : "Confirm ride"}
-              </button>
-            </section>
-          ) : null}
+                <button
+                  type="button"
+                  className="btn btn-primary btn-block booking-primary-action"
+                  onClick={() => void confirmRide()}
+                  disabled={loading !== null}
+                >
+                  {loading === "book" ? (
+                    "Preparing covenant…"
+                  ) : (
+                    <>
+                      <Check aria-hidden="true" size={18} />
+                      {state.canSignCovenants
+                        ? "Confirm ride & sign escrow"
+                        : "Confirm ride"}
+                    </>
+                  )}
+                </button>
+              </section>
+            ) : null}
+          </form>
         </div>
 
-        <div className="stack">
+        <div className="booking-support-grid">
           <WalletPanel />
-          <section className="card">
-            <h2 className="card-title">How payment works</h2>
-            <p>
-              Your fare is locked in a ride-specific SilverScript covenant, not
-              paid to OSRH or the driver up front.
-            </p>
+          <section className="card payment-explainer">
+            <span className="payment-explainer-icon">
+              <ShieldCheck aria-hidden="true" size={22} />
+            </span>
+            <div>
+              <p className="eyebrow">Payment protection</p>
+              <h2>How your normal-ride fare moves</h2>
+              <p>
+                The fare is locked in a ride-specific SilverScript covenant, not
+                paid to OSRH or the driver up front.
+              </p>
+            </div>
             <ol className="payment-steps">
               <li>You sign the escrow funding transaction.</li>
-              <li>The selected driver and you sign the assignment.</li>
-              <li>After the trip, both parties authorize settlement.</li>
-              <li>
-                Cancellation and timeout refunds follow the covenant rules.
-              </li>
+              <li>You and the selected driver sign the assignment.</li>
+              <li>Both parties authorize settlement after the trip.</li>
+              <li>Cancellation and timeout refunds follow covenant rules.</li>
             </ol>
           </section>
         </div>

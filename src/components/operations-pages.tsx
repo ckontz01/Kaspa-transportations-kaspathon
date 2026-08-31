@@ -8,6 +8,15 @@ import {
   useMemo,
   useState,
 } from "react";
+import {
+  ArrowRight,
+  ChartNoAxesCombined,
+  ClipboardCheck,
+  Database,
+  ListChecks,
+  Map,
+  MessageCircle,
+} from "lucide-react";
 import { useOsrh } from "@/components/osrh-provider";
 import { ProtectedPage } from "@/components/protected-page";
 import { RideMap, type RideMapProps } from "@/components/ride-map";
@@ -143,7 +152,7 @@ export function OperatorOperationsPage() {
     <ProtectedPage role={["operator", "admin"]}>
       <div className="page-header">
         <div>
-          <h1>⚙️ Operations</h1>
+          <h1>Operations</h1>
           <p>
             The original OSRH operations hub, backed by Atlas audit records.
           </p>
@@ -175,37 +184,37 @@ export function OperatorOperationsPage() {
       <div className="quick-actions">
         <Action
           href="/operator/safety"
-          icon="🛠️"
+          icon={<ClipboardCheck />}
           title="Safety Inspections"
           text="Approve or reject driver vehicles before they go online."
         />
         <Action
           href="/operator/fleet-map"
-          icon="🗺️"
+          icon={<Map />}
           title="Fleet Map"
           text="See online drivers, autonomous vehicles, and carshare vehicles."
         />
         <Action
           href="/operator/logs"
-          icon="📜"
+          icon={<ListChecks />}
           title="System Logs"
           text="Review the immutable operational audit trail."
         />
         <Action
           href="/operator/data"
-          icon="🗄️"
+          icon={<Database />}
           title="Database Viewer"
           text="Inspect sanitized Atlas collection summaries and recent records."
         />
         <Action
           href="/operator/reports"
-          icon="📊"
+          icon={<ChartNoAxesCombined />}
           title="Reports & Analytics"
           text="Review normal ride and Kaspa settlement reporting."
         />
         <Action
           href="/messages"
-          icon="💬"
+          icon={<MessageCircle />}
           title="Messages"
           text="Support passengers and drivers."
         />
@@ -759,7 +768,7 @@ function Action({
   text,
 }: {
   href: string;
-  icon: string;
+  icon: React.ReactNode;
   title: string;
   text: string;
 }) {
@@ -772,7 +781,9 @@ function Action({
         <h3>{title}</h3>
         <p>{text}</p>
       </div>
-      <span>Open →</span>
+      <span className="action-open">
+        Open <ArrowRight aria-hidden="true" size={16} />
+      </span>
     </Link>
   );
 }

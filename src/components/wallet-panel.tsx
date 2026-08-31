@@ -1,5 +1,6 @@
 "use client";
 
+import { Gem } from "lucide-react";
 import { useOsrh } from "@/components/osrh-provider";
 
 function shortAddress(value: string) {
@@ -16,7 +17,10 @@ export function WalletPanel({ compact = false }: { compact?: boolean }) {
     >
       <div className="wallet-panel-heading">
         <div>
-          <h2>💎 Kaspa Wallet</h2>
+          <h2>
+            <Gem aria-hidden="true" size={20} />
+            Kaspa Wallet
+          </h2>
           <p>KIP-5 proves ownership; KIP-12 signs covenant transactions.</p>
         </div>
         <span

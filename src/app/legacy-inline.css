@@ -149,7 +149,11 @@
   font-size: 1rem;
   font-weight: 600;
   border-radius: 12px;
-  transition: all 0.3s ease;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -241,7 +245,10 @@
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 16px;
   padding: 2rem;
-  transition: all 0.3s ease;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
   position: relative;
   overflow: hidden;
 }
@@ -339,7 +346,10 @@
   border-radius: 20px;
   padding: 2.5rem 2rem;
   text-align: center;
-  transition: all 0.3s ease;
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast),
+    transform var(--transition-fast);
   position: relative;
   overflow: hidden;
 }
@@ -425,7 +435,10 @@
   font-weight: 600;
   border-radius: 10px;
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
 }
 
 .cta-card.passenger-cta .btn-cta {
@@ -696,7 +709,10 @@
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 10px;
   color: white;
-  transition: all 0.2s ease;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
 }
 
 .login-form .form-control:focus {
@@ -726,7 +742,10 @@
   border: none;
   border-radius: 10px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition:
+    background-color var(--transition-fast),
+    color var(--transition-fast),
+    transform var(--transition-fast);
   margin-top: 0.5rem;
 }
 
@@ -774,7 +793,10 @@
   border-radius: 10px;
   color: #e5e7eb;
   text-decoration: none;
-  transition: all 0.2s ease;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    color var(--transition-fast);
 }
 
 .register-link:hover {
@@ -1097,7 +1119,10 @@
   background: var(--color-bg, #111827);
   border: 1px solid var(--border-color, #374151);
   border-radius: 8px;
-  transition: all 0.2s;
+  transition:
+    background-color var(--transition-fast),
+    border-color var(--transition-fast),
+    transform var(--transition-fast);
   font-size: 0.9rem;
 }
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { useParams } from "next/navigation";
+import { Camera } from "lucide-react";
 import { useOsrh } from "@/components/osrh-provider";
 import { ProtectedPage } from "@/components/protected-page";
 import { apiRequest, errorMessage } from "@/lib/api";
@@ -92,14 +93,14 @@ export function DriverDocumentsPage() {
       <div className="content-grid">
         <DocumentUpload
           documentType="id_card"
-          title="🪪 ID Card"
+          title="ID Card"
           current={documents.find((item) => item.documentType === "id_card")}
           loading={loading}
           onSubmit={upload}
         />
         <DocumentUpload
           documentType="driver_license"
-          title="🚗 Driver's Licence"
+          title="Driver's Licence"
           current={documents.find(
             (item) => item.documentType === "driver_license",
           )}
@@ -275,7 +276,9 @@ function DocumentUpload({
           accept="image/jpeg,image/png,image/webp,application/pdf"
           required
         />
-        <span className="file-upload-icon">📷</span>
+        <span className="file-upload-icon">
+          <Camera aria-hidden="true" size={28} />
+        </span>
         <span className="file-upload-text">
           <strong>Click to upload</strong> or choose a replacement
           <br />

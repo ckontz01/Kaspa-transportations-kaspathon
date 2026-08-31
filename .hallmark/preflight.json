@@ -1,28 +1,28 @@
 {
   "date": "2026-08-31",
   "sources": {
-    "font": "Legacy Segoe UI/system stack in OSRH_KASPA_PHP css",
-    "palette": "Near-black slate with Kaspa cyan and blue/green status accents",
-    "motion": "CSS transitions only; no motion library",
-    "spacing": "No consistent scale",
-    "framework": "Legacy PHP templates; replacement is Next.js App Router"
+    "font": "Plus Jakarta Sans for product UI and JetBrains Mono for protocol/data labels",
+    "palette": "Warm cream paper, near-black ink, restrained pear/cyan/coral/mint/lavender semantic accents",
+    "motion": "CSS-only tactile states and one orchestrated entrance with reduced-motion support",
+    "spacing": "4px tokenized spacing scale",
+    "framework": "Next.js 16 App Router with shared role-aware application shell"
   },
   "preserve": [
-    "technical Kaspa payment visibility",
-    "dark protocol surface",
-    "direct status language"
+    "all passenger, driver, operator, autonomous, car-sharing, account, messaging, privacy, and covenant routes",
+    "technical Kaspa covenant and wallet visibility",
+    "direct operational status language"
   ],
   "introduce": [
-    "Workbench macrostructure",
-    "Cobalt token system",
-    "4pt spacing scale",
-    "full interaction states",
-    "command palette"
+    "Map / Diagram macrostructure",
+    "Hum token system",
+    "desktop N3 side rail and mobile bottom navigation with complete More sheet",
+    "map-first normal-ride booking canvas with progressive disclosure",
+    "role-aware dashboard hierarchy and responsive common ride-hailing patterns"
   ],
   "preview": {
-    "preEmitCritique": "P5 H5 E5 S5 R4 V5",
-    "slopTest": "pass (58/58 gates)",
-    "contrast": "pass (WCAG 2.1 checks for declared text/surface pairs)",
+    "preEmitCritique": "P5 H5 E4 S5 R5 V5",
+    "slopTest": "pass (58/58 gates; desktop rendered, narrow widths statically audited because isolated viewport rendering was blocked by browser policy)",
+    "contrast": "pass (WCAG 2.1 ratios: body pairs >= 4.5:1; focus and icon pairs >= 3:1)",
     "viewports": [
       "320x800",
       "375x800",
@@ -32,6 +32,7 @@
       "1920x1080"
     ],
     "horizontalOverflow": false,
-    "wrappedClickableLabels": false
+    "wrappedClickableLabels": false,
+    "viewportVerification": "1280-class desktop rendered in-app; 320/375/414/768 media-query and layout-safety checks completed statically"
   }
 }

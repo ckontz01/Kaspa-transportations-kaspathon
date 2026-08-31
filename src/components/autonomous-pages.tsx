@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import { Bot } from "lucide-react";
 import { ProtectedPage } from "@/components/protected-page";
 import { RideMap } from "@/components/ride-map";
 import { apiRequest, errorMessage } from "@/lib/api";
@@ -249,7 +250,9 @@ export function AutonomousPage() {
             <div className="vehicle-grid compact">
               {vehicles.slice(0, 8).map((vehicle) => (
                 <article className="vehicle-card" key={vehicle.id}>
-                  <span className="vehicle-icon">🤖</span>
+                  <span className="vehicle-icon">
+                    <Bot aria-hidden="true" size={21} />
+                  </span>
                   <div>
                     <strong>
                       {vehicle.make} {vehicle.model}

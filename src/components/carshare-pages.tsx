@@ -1,6 +1,17 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useMemo, useState } from "react";
+import {
+  BatteryCharging,
+  CalendarDays,
+  CarFront,
+  Clock3,
+  ClipboardList,
+  MapPinned,
+  Search,
+  UserRound,
+  XCircle,
+} from "lucide-react";
 import { useOsrh } from "@/components/osrh-provider";
 import { ProtectedPage } from "@/components/protected-page";
 import { RideMap } from "@/components/ride-map";
@@ -281,7 +292,10 @@ export function CarsharePage() {
       ) : null}
       {profile?.verificationStatus === "pending" ? (
         <section className="card pending-card">
-          <h2>⏳ Verification Pending</h2>
+          <h2 className="icon-heading">
+            <Clock3 aria-hidden="true" size={21} />
+            Verification Pending
+          </h2>
           <p>
             An OSRH operator is reviewing your licence details. Fleet browsing
             remains available, but booking unlocks after approval.
@@ -290,7 +304,10 @@ export function CarsharePage() {
       ) : null}
       {profile?.verificationStatus === "rejected" ? (
         <section className="card">
-          <h2>❌ Verification Failed</h2>
+          <h2 className="icon-heading">
+            <XCircle aria-hidden="true" size={21} />
+            Verification Failed
+          </h2>
           <p>
             Contact OSRH support through Messages to resolve your application.
           </p>
@@ -346,7 +363,11 @@ export function CarsharePage() {
                   key={vehicle.id}
                 >
                   <div className="vehicle-photo-placeholder">
-                    {vehicle.electric ? "⚡" : "🚗"}
+                    {vehicle.electric ? (
+                      <BatteryCharging aria-hidden="true" size={35} />
+                    ) : (
+                      <CarFront aria-hidden="true" size={35} />
+                    )}
                   </div>
                   <h3>
                     {vehicle.make} {vehicle.model}
@@ -432,7 +453,10 @@ function CarshareFilters({
   ];
   return (
     <aside className="card carshare-filters">
-      <h2 className="card-title">🔍 Find a Vehicle</h2>
+      <h2 className="card-title icon-heading">
+        <Search aria-hidden="true" size={21} />
+        Find a Vehicle
+      </h2>
       <Select label="Zone" value={zoneFilter} onChange={setZoneFilter}>
         <option value="">All zones</option>
         {zones.map((zone) => (
@@ -522,14 +546,20 @@ function CarshareRegistrationForm({
     <form className="card registration-card" onSubmit={onSubmit}>
       <div className="card-header">
         <div>
-          <h1 className="card-title">🚗 Register for Car Share</h1>
+          <h1 className="card-title icon-heading">
+            <CarFront aria-hidden="true" size={22} />
+            Register for Car Share
+          </h1>
           <p>
             Driver licence verification is required before reserving vehicles.
           </p>
         </div>
       </div>
       <div className="form-section">
-        <h3>📋 Driver&apos;s Licence Information</h3>
+        <h3 className="icon-heading">
+          <ClipboardList aria-hidden="true" size={18} />
+          Driver&apos;s Licence Information
+        </h3>
         <Field label="Licence Number" name="licenseNumber" required />
         <div className="form-grid">
           <div className="form-group">
@@ -574,7 +604,10 @@ function CarshareRegistrationForm({
         </div>
       </div>
       <div className="form-section">
-        <h3>👤 Personal Information</h3>
+        <h3 className="icon-heading">
+          <UserRound aria-hidden="true" size={18} />
+          Personal Information
+        </h3>
         <Field
           label="National ID / Passport Number (optional)"
           name="nationalId"
@@ -642,10 +675,15 @@ function ActiveBooking({
     <section className="card active-carshare">
       <div className="card-header">
         <div>
-          <h2 className="card-title">
+          <h2 className="card-title icon-heading">
+            {booking.status === "in_progress" ? (
+              <CarFront aria-hidden="true" size={21} />
+            ) : (
+              <CalendarDays aria-hidden="true" size={21} />
+            )}
             {booking.status === "in_progress"
-              ? "🚗 Active Rental"
-              : "📅 Reserved Vehicle"}
+              ? "Active Rental"
+              : "Reserved Vehicle"}
           </h2>
           <p>
             {vehicle?.make} {vehicle?.model} · {booking.vehicleId}
@@ -691,7 +729,8 @@ function ActiveBooking({
               disabled={loading || Boolean(booking.teleDrive)}
               onClick={() => void onTeleDrive()}
             >
-              🚘 Drive this car to me
+              <MapPinned aria-hidden="true" size={18} />
+              Drive this car to me
             </button>
           </>
         ) : (

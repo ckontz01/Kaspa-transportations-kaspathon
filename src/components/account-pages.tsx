@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
+import { CarFront } from "lucide-react";
 import { useOsrh } from "@/components/osrh-provider";
 import { ProtectedPage } from "@/components/protected-page";
 import { WalletPanel } from "@/components/wallet-panel";
@@ -491,7 +492,9 @@ export function DriverVehiclesPage() {
             <div className="vehicle-grid">
               {vehicles.map((vehicle) => (
                 <article className="vehicle-card" key={vehicle.id}>
-                  <div className="vehicle-icon">🚗</div>
+                  <div className="vehicle-icon">
+                    <CarFront aria-hidden="true" size={22} />
+                  </div>
                   <div>
                     <h3>
                       {vehicle.make} {vehicle.model}

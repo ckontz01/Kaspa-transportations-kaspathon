@@ -2,6 +2,16 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import {
+  Activity,
+  ArrowRight,
+  Bot,
+  ChartNoAxesCombined,
+  KeyRound,
+  MessageCircle,
+  ShieldCheck,
+  UsersRound,
+} from "lucide-react";
 import { useOsrh } from "@/components/osrh-provider";
 import { ProtectedPage } from "@/components/protected-page";
 import { apiRequest, errorMessage } from "@/lib/api";
@@ -52,43 +62,43 @@ export function OperatorDashboardPage() {
         <div className="quick-actions">
           <Action
             href="/operator/operations"
-            icon="⚙️"
+            icon={<Activity />}
             title="Operations Hub"
             text="Open safety, fleet maps, system logs, and the Atlas data viewer."
           />
           <Action
             href="/operator/drivers"
-            icon="🪪"
+            icon={<UsersRound />}
             title="Drivers Hub"
             text="Review and approve driver applications."
           />
           <Action
             href="/operator/reports"
-            icon="📊"
+            icon={<ChartNoAxesCombined />}
             title="Reports"
             text="View normal-ride and settlement reports."
           />
           <Action
             href="/messages"
-            icon="💬"
+            icon={<MessageCircle />}
             title="Messages"
             text="Provide support to passengers and drivers."
           />
           <Action
             href="/operator/privacy"
-            icon="🛡️"
+            icon={<ShieldCheck />}
             title="GDPR Requests"
             text="Review account privacy requests."
           />
           <Action
             href="/operator/autonomous"
-            icon="🤖"
+            icon={<Bot />}
             title="Autonomous Hub"
             text="Open autonomous mobility operations."
           />
           <Action
             href="/operator/carshare"
-            icon="🔑"
+            icon={<KeyRound />}
             title="Carshare Hub"
             text="Open shared-vehicle operations."
           />
@@ -457,7 +467,7 @@ function Action({
   text,
 }: {
   href: string;
-  icon: string;
+  icon: React.ReactNode;
   title: string;
   text: string;
 }) {
@@ -468,7 +478,9 @@ function Action({
         <h3>{title}</h3>
         <p>{text}</p>
       </div>
-      <span>Open →</span>
+      <span className="action-open">
+        Open <ArrowRight aria-hidden="true" size={16} />
+      </span>
     </Link>
   );
 }

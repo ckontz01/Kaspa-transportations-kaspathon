@@ -3,6 +3,17 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  ArrowRight,
+  BadgeDollarSign,
+  Bot,
+  CarFront,
+  KeyRound,
+  MapPinned,
+  ShieldCheck,
+} from "lucide-react";
 import { useOsrh } from "@/components/osrh-provider";
 import { apiRequest, errorMessage } from "@/lib/api";
 import type { ApiUser } from "@/lib/types";
@@ -60,7 +71,9 @@ export function LoginPage() {
     <div className="login-container">
       <div className="login-wrapper">
         <div className="login-brand">
-          <div className="brand-logo">🚗</div>
+          <div className="brand-logo">
+            <CarFront aria-hidden="true" size={26} />
+          </div>
           <h2 className="brand-title">Welcome to OSRH</h2>
           <p className="brand-subtitle">
             Your smart ride-hailing platform. Connect with drivers and
@@ -68,30 +81,41 @@ export function LoginPage() {
           </p>
           <ul className="brand-features">
             <li>
-              <span className="feature-icon">🎯</span>
+              <span className="feature-icon">
+                <MapPinned aria-hidden="true" size={16} />
+              </span>
               <span>Easy ride booking in seconds</span>
             </li>
             <li>
-              <span className="feature-icon">🔒</span>
+              <span className="feature-icon">
+                <ShieldCheck aria-hidden="true" size={16} />
+              </span>
               <span>Secure and verified platform</span>
             </li>
             <li>
-              <span className="feature-icon">🤖</span>
+              <span className="feature-icon">
+                <Bot aria-hidden="true" size={16} />
+              </span>
               <span>Autonomous vehicle support</span>
             </li>
             <li>
-              <span className="feature-icon">🔑</span>
+              <span className="feature-icon">
+                <KeyRound aria-hidden="true" size={16} />
+              </span>
               <span>Flexible car sharing</span>
             </li>
             <li>
-              <span className="feature-icon">💰</span>
+              <span className="feature-icon">
+                <BadgeDollarSign aria-hidden="true" size={16} />
+              </span>
               <span>Transparent pricing</span>
             </li>
           </ul>
         </div>
         <div className="login-form-section">
           <Link href="/" className="back-link">
-            ← Back to home
+            <ArrowLeft aria-hidden="true" size={17} />
+            Back to home
           </Link>
           <div className="login-header">
             <h1>Sign In</h1>
@@ -99,7 +123,7 @@ export function LoginPage() {
           </div>
           {error ? (
             <div className="flash-error-custom">
-              <span>⚠️</span>
+              <AlertTriangle aria-hidden="true" size={18} />
               <span>{error}</span>
             </div>
           ) : null}
@@ -133,7 +157,13 @@ export function LoginPage() {
               />
             </div>
             <button type="submit" className="login-btn" disabled={loading}>
-              {loading ? "Signing in…" : "Sign In →"}
+              {loading ? (
+                "Signing in…"
+              ) : (
+                <>
+                  Sign in <ArrowRight aria-hidden="true" size={17} />
+                </>
+              )}
             </button>
           </form>
           <div className="login-divider">
@@ -144,13 +174,16 @@ export function LoginPage() {
               href="/register/passenger"
               className="register-link passenger"
             >
-              🚕 Passenger
+              <CarFront aria-hidden="true" size={17} />
+              Passenger
             </Link>
             <Link href="/register/driver" className="register-link driver">
-              🚗 Driver
+              <ShieldCheck aria-hidden="true" size={17} />
+              Driver
             </Link>
             <Link href="/register/passenger" className="register-link carshare">
-              🔑 Car Share
+              <KeyRound aria-hidden="true" size={17} />
+              Car share
             </Link>
           </div>
         </div>

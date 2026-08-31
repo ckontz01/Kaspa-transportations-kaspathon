@@ -2,6 +2,18 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
+import {
+  ArrowRight,
+  Bot,
+  Car,
+  CarFront,
+  CircleDollarSign,
+  History,
+  KeyRound,
+  MapPinned,
+  MessageCircle,
+  WalletCards,
+} from "lucide-react";
 import { useOsrh } from "@/components/osrh-provider";
 import { ProtectedPage } from "@/components/protected-page";
 import { WalletPanel } from "@/components/wallet-panel";
@@ -91,37 +103,37 @@ export function PassengerDashboardPage() {
             <div className="quick-actions">
               <Action
                 href="/passenger/request-ride"
-                icon="🚕"
+                icon={<CarFront />}
                 title="Request Driver Ride"
                 text="Book a nearby driver with Kaspa covenant escrow."
               />
               <Action
                 href="/autonomous"
-                icon="🤖"
+                icon={<Bot />}
                 title="Autonomous Ride"
                 text="Request an available autonomous vehicle."
               />
               <Action
                 href="/carshare"
-                icon="🔑"
+                icon={<KeyRound />}
                 title="Car Share"
                 text="Find and reserve a shared vehicle."
               />
               <Action
                 href="/passenger/rides"
-                icon="🧾"
+                icon={<History />}
                 title="Ride History"
                 text="Review active and completed trips."
               />
               <Action
                 href="/passenger/payments"
-                icon="💎"
+                icon={<WalletCards />}
                 title="Payments"
                 text="Inspect covenant settlements and refunds."
               />
               <Action
                 href="/messages"
-                icon="💬"
+                icon={<MessageCircle />}
                 title="Messages"
                 text="Talk to drivers and OSRH support."
               />
@@ -202,25 +214,25 @@ export function DriverDashboardPage() {
             <div className="quick-actions">
               <Action
                 href="/driver/trips"
-                icon="🗺️"
+                icon={<MapPinned />}
                 title="Available Trips"
                 text="View requests and assigned rides."
               />
               <Action
                 href="/driver/vehicles"
-                icon="🚗"
+                icon={<Car />}
                 title="My Vehicles"
                 text="Register vehicles and manage availability."
               />
               <Action
                 href="/driver/earnings"
-                icon="💎"
+                icon={<CircleDollarSign />}
                 title="Earnings"
                 text="Review on-chain driver payouts."
               />
               <Action
                 href="/messages"
-                icon="💬"
+                icon={<MessageCircle />}
                 title="Messages"
                 text="Contact passengers and support."
               />
@@ -591,7 +603,7 @@ function Action({
   text,
 }: {
   href: string;
-  icon: string;
+  icon: React.ReactNode;
   title: string;
   text: string;
 }) {
@@ -604,7 +616,9 @@ function Action({
         <h3>{title}</h3>
         <p>{text}</p>
       </div>
-      <span>Open →</span>
+      <span className="action-open">
+        Open <ArrowRight aria-hidden="true" size={16} />
+      </span>
     </Link>
   );
 }
