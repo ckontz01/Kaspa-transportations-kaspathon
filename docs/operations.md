@@ -22,7 +22,26 @@ The password is not stored in Git. Access to the pre-existing `PeriopsiStorage` 
 
 Development, preview, and production environments contain the Atlas URI, database name, testnet network, resolver public key, compute budget, priority fee, session secret, reconciler secret, and application origin.
 
-## Deploy
+## CI/CD Pipeline & Automated Deployment
+
+A GitHub Actions workflow (`.github/workflows/ci-cd.yml`) handles continuous integration and continuous deployment:
+
+* **On every Push to `main`**: Runs TypeScript checks, Vitest frontend tests, Pytest backend/covenant tests, Next.js build, and automatically deploys to Vercel production.
+* **On Pull Requests targeting `main`**: Runs the full test suite and deploys an ephemeral Vercel preview URL.
+
+### Required GitHub Repository Secrets
+
+To enable automated Vercel deployment from GitHub Actions, configure these secrets under **Settings > Secrets and variables > Actions** in the GitHub repository:
+
+1. `VERCEL_TOKEN`: Personal Access Token from [Vercel Account Tokens](https://vercel.com/account/tokens).
+2. `VERCEL_ORG_ID` *(optional)*: `team_zp2cqDeinRPTnK5u3NmLPgOF` (defaults to project settings if omitted).
+3. `VERCEL_PROJECT_ID` *(optional)*: `prj_S5GX9Nli2Tnrj8o9uvAsHxN0pupQ` (defaults to project settings if omitted).
+
+*Note: If `VERCEL_TOKEN` is not yet configured, the workflow still runs all test suites to protect the repository on every push and pull request.*
+
+## Manual Deploy (CLI Fallback)
+
+If deploying manually from a local checkout:
 
 ```powershell
 npm run typecheck
