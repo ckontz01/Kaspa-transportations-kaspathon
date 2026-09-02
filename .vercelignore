@@ -4,6 +4,7 @@
 node_modules/
 .next/
 .env*
+!.env.example
 .resolver.*.key
 __pycache__/
 *.py[cod]
